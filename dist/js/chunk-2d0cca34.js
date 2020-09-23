@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0cca34"],{"4f7c":function(e,n,c){"use strict";c.r(n);var t=function(){var e=this,n=e.$createElement,c=e._self._c||n;return c("div",[e._v(" 消息列表 ")])},s=[],a={name:"MessageList"},u=a,i=c("2877"),r=Object(i["a"])(u,t,s,!1,null,"40273f74",null);n["default"]=r.exports}}]);

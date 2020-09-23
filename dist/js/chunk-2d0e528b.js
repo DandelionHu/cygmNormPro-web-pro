@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0e528b"],{"92fb":function(e,n,t){"use strict";t.r(n);var a=function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("div",[e._v(" 课程列表 ")])},c=[],u={name:"StudyList"},s=u,i=t("2877"),r=Object(i["a"])(s,a,c,!1,null,"ac90d8a4",null);n["default"]=r.exports}}]);
