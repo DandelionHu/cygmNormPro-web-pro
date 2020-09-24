@@ -4,6 +4,8 @@
       ref="editForms"
       :editData="editData"
       :items="items"
+      :labelCol="labelCol"
+      :wrapperCol="wrapperCol"
       @on_submit="onSubmit"
       @on_cancel="onCancel"/>
   </div>
@@ -30,14 +32,22 @@
     components: {
       editForms
     },
+    watch:{
+      editForm:{
+        handler(){
+          this.editData= { ...this.editForm }
+        },
+        deep:true
+      }
+    },
     data() {
       return {
+        labelCol:{lg: {span: 2}, sm: {span: 3}},
+        wrapperCol:{lg: {span: 16}, sm: {span: 16}},
         editData: { ...this.editForm },
-        // fulltext 和expression 还没加上
         items: [
           {
             title: '广告图：',
-            elCol: 18,
             num: 1, // 上传张数
             name: 'content',
             type: 'images',
@@ -45,6 +55,8 @@
             descStyle: {
               color: 'red'
             },
+            labelCol:{lg: {span: 2}, sm: {span: 3}},
+            wrapperCol:{lg: {span: 16}, sm: {span: 16}},
             required: true, // true false 是否为必须填写？
             validate: [ // required为true时 必填
               { required: true, message: '请点击上传广告图片', trigger: 'blur' },
@@ -53,11 +65,10 @@
           },
           {
             title: '图片链接：',
-            elCol: 18,
             placeholder: '请填写图片链接', // 提示
             name: 'others',
             type: 'string'
-          }
+          },
         ]
 
       }
@@ -80,7 +91,6 @@
           }, 1000)
         }
       },
-
       // 点击取消按钮
       onCancel() {
         this.$emit('onCancel')
@@ -94,5 +104,5 @@
   }
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 </style>

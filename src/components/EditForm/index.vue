@@ -4,8 +4,9 @@
       ref="formData"
       :model="formData"
       :rules="rules"
-      :label-col="labelCol"
-      :wrapper-col="wrapperCol">
+      :labelCol="labelCol"
+      :wrapperCol="wrapperCol"
+      >
       <a-row>
         <a-col :span="item.elCol" v-for="(item, index) in formItems" :key="index">
           <a-form-model-item
@@ -13,49 +14,51 @@
             :ref="formData[item.name]"
             :label="item.title"
             :prop="item.name"
+            :labelCol="item.labelCol"
+            :wrapperCol="item.wrapperCol"
             :required="item.required">
             <!-- string类型 -->
             <a-input
               :disabled="item.enable"
-              v-if="item.type=='string'"
+              v-if="item.type ==='string'"
               :style="'width:'+item.width+'px;'"
               :placeholder="item.placeholder"
-              v-model="formData[item.name]"/>
+              v-model="formData[item.name]"></a-input>
             <!-- password类型 -->
             <a-input
               :disabled="item.enable"
-              v-if="item.type=='password'"
+              v-if="item.type==='password'"
               type="password"
               :style="'width:'+item.width+'px;'"
               :placeholder="item.placeholder"
-              v-model="formData[item.name]"/>
+              v-model="formData[item.name]"></a-input>
             <!-- number类型 -->
             <a-input
               :disabled="item.enable"
-              v-if="item.type=='number'"
+              v-if="item.type ==='number'"
               type="number"
               :style="'width:'+item.width+'px;'"
               :placeholder="item.placeholder"
-              v-model="formData[item.name]"/>
+              v-model="formData[item.name]"></a-input>
             <!-- textarea 类型 -->
             <a-input
               :disabled="item.enable"
-              v-if="item.type=='textarea'"
+              v-if="item.type==='textarea'"
               type="textarea"
               :autosize="item.autosize"
               :style="'width:'+item.width+'px;'"
               :placeholder="item.placeholder"
-              v-model="formData[item.name]"/>
+              v-model="formData[item.name]"></a-input>
             <!-- date类型 -->
             <a-range-picker
               class="seek-item"
-              v-if="item.type=='date'"
+              v-if="item.type==='date'"
               style="width: auto"
               format="YYYY-MM-DD"
               @change="onDateChange"
               :default-value="(formData[item.startName]&&formData[item.endName])?[moment(switchTime(formData[item.startName]), 'YYYY-MM-DD'), moment(switchTime(formData[item.endName]), 'YYYY-MM-DD')]:null"
               v-model="formData[item.name]"
-              :placeholder="['开始时间','结束时间']"/>
+              :placeholder="['开始时间','结束时间']"></a-range-picker>
             <!-- 下拉框 -->
             <a-select
               clearIcon
@@ -66,32 +69,23 @@
               allowClear
               v-model="formData[item.name]">
               <a-select-option
-                v-for="item in item.options"
-                :value="item.value"
-                :key="item.value">{{ item.label }}
+                v-for="it in item.options"
+                :value="it.value"
+                :key="it.value">{{ it.label }}
               </a-select-option>
             </a-select>
 
             <!-- 单选框 -->
-            <a-radio-group
-              v-if="item.type === 'radio'"
-              v-model="formData[item.name]">
-              <a-radio
-                :value="i.value"
-                v-for="(i,index) in item.options"
-                :key="index">
-                {{ i.label }}
-              </a-radio>
-              <!-- checkbox类型 -->
-              <a-checkbox-group
-                class="seek-item"
-                v-if="item.type === 'checkbox'"
-                style="width: auto"
-                v-model="formData[item.name]"
-                name="checkboxgroup"
-                :options="item.options"/>
+            <a-radio-group   v-if="item.type === 'radio'" :name="item.name"  v-model="formData[item.name]" :options="item.options"/>
 
-            </a-radio-group>
+            <!-- checkbox类型 -->
+            <a-checkbox-group
+              class="seek-item"
+              v-if="item.type === 'checkbox'"
+              style="width: auto"
+              v-model="formData[item.name]"
+              :name="item.name"
+              :options="item.options"></a-checkbox-group>
             <!-- images 类型 -->
             <UploadImg
               v-if="item.type === 'images'"
@@ -99,6 +93,13 @@
               :keys="item.name"
               :fileList="formData[item.name]?formData[item.name]:[]"
               :num="item.num"/>
+            <!--百度富文本-->
+            <u-editor
+              v-if="item.type === 'BaiduFulltext'"
+              :value="formData[item.name]"
+              :keys="item.name"
+              name="content"
+              @change="editorChange"></u-editor>
 
             <div
               v-if="item.desc"
@@ -130,12 +131,13 @@
   </div>
 </template>
 <script>
-  import UploadImg from '@/components/UploadImg/UploadImg'
+  import { UploadImg, UEditor } from '@/components'
   import moment from 'moment'
 
   export default {
     components: {
-      UploadImg
+      UploadImg,
+      UEditor
     },
     props: {
       editData: {
@@ -143,6 +145,20 @@
         default() {
           return {}
         }
+      },
+      labelCol:{
+        type:Object,
+        default() {
+          return {}
+        }
+
+      },
+      wrapperCol:{
+        type:Object,
+        default() {
+          return {}
+        }
+
       },
       items: {
         type: Array,
@@ -154,8 +170,6 @@
     data() {
       return {
         moment,
-        labelCol: { span: 4 },
-        wrapperCol: { span: 14 },
         formData: {},
         rules: this.getFormItems('rules'),
         formItems: this.getFormItems(),
@@ -194,7 +208,11 @@
       onDateChange(time, dateStrings) {
         console.log(time, dateStrings, 'time, dateStrings')
       },
-      onSubmit(formName) {
+      //富文本
+      editorChange(item){
+        this.formData[item.keys] = item.val
+      },
+      onSubmit() {
         const that = this
         this.$refs.formData.validate(valid => {
           if (valid) {
@@ -228,7 +246,7 @@
       resetForm() {
         for (const key in this.formData) {
           if (key !== 'id') {
-            this.formData[key] = ''
+            this.formData[ key ] = ''
           }
         }
         this.$refs.formData.resetFields()
@@ -280,7 +298,9 @@
             startName: item.startName || '',
             endName: item.endName || '',
             num: item.num || 1,
-            descStyle: item.descStyle || ''
+            descStyle: item.descStyle || '',
+            labelCol:item.labelCol,
+            wrapperCol:item.wrapperCol
           })
         })
         // rule，验证规则
@@ -305,6 +325,7 @@
       }
     },
     mounted() {
+      console.log(this.editData,'this.editData')
       this.$nextTick(() => {
         this.formData = { ...this.editData }
       })

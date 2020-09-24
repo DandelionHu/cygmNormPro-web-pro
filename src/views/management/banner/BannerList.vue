@@ -45,7 +45,6 @@
         :editForm="editForm"
         @dataChange="dataChange"
         @onCancel="showAdd = false"/>
-
     </a-card>
   </page-header-wrapper>
 </template>
@@ -98,7 +97,6 @@
         },
         filtrate: {
           resetBtn: false, // 是否显示重置按钮
-          // seek: [],
           // 表格按钮
           headBtnList: [
             {
@@ -114,7 +112,7 @@
       dataChange() {
       },
       // 自定义按钮事件
-      btnClick(item) {
+      btnClick() {
         this.editForm = {}
         this.showAdd = !this.showAdd
       },
@@ -130,15 +128,16 @@
       handleEdit(row, _type) {
         const that = this
         if (_type === 'edit') {
-          const { id, content, others } = { ...row }
+          const { id, others } = { ...row }
+          let { content } = { ...row }
           this.showAdd = true
-          const editContent = [{
+           content = [{
             status: 'done',
             uid: content,
             name: content,
             url: content
           }]
-          this.editForm = { id, editContent, others }
+          this.editForm = { id, content, others,checkbox:[1],radio:1}
         } else {
           this.$confirm({
             title: '删除提示',

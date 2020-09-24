@@ -11,7 +11,7 @@
                    { min:2, max:15, message: '请输入长度2到15位',whitespace: true }]}
         ]"
         name="title"
-        placeholder="请输入标题"/>
+        placeholder="请输入标题"></a-input>
     </a-form-item>
     <a-form-item
       label="来源"
@@ -28,6 +28,7 @@
       :wrapperCol="{lg: {span: 6}, sm: {span: 6}}">
       <a-input
         v-decorator="['author']"
+
         name="author"
         placeholder="请输入作者"/>
     </a-form-item>
@@ -178,22 +179,22 @@
             params.id = this.editID
             params.type = this.type
             baseNewsSaveNews(params)
-                .then((res) => {
-                  if (res.returnValue) {
-                    if (this.editID) {
-                      this.$message.info('编辑成功')
-                    } else {
-                      this.$message.info('保存成功')
-                    }
-                    this.onCancel()
+              .then((res) => {
+                if (res.returnValue) {
+                  if (this.editID) {
+                    this.$message.info('编辑成功')
+                  } else {
+                    this.$message.info('保存成功')
                   }
-                })
-                .catch(err => {
-                  console.log(err)
-                })
-                .finally(() => {
-                  this.lodingBtn = false
-                })
+                  this.onCancel()
+                }
+              })
+              .catch(err => {
+                console.log(err)
+              })
+              .finally(() => {
+                this.lodingBtn = false
+              })
           }
         })
       },

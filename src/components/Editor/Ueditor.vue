@@ -1,6 +1,10 @@
 <template>
   <div :class="prefixCls">
-    <vue-ueditor-wrap v-model="content" :config="editorConfig" @ready="ueditorReady" :destroy="true"></vue-ueditor-wrap>
+    <vue-ueditor-wrap
+      v-model="content"
+      :config="editorConfig"
+      @ready="ueditorReady"
+      :destroy="true"></vue-ueditor-wrap>
   </div>
 </template>
 
@@ -15,6 +19,10 @@
         default: 'ant-editor-wang'
       },
       value: {
+        type: String,
+        default: ''
+      },
+      keys: {
         type: String,
         default: ''
       },
@@ -53,11 +61,12 @@
         this.content = val
       },
       content (val) {
-        this.$emit('change', val)
+        const objVal = this.keys ? { keys: this.keys, val: val } : val
+        this.$emit('change', objVal)
       }
     },
     methods: {
-      ueditorReady(editorInstance) {
+      ueditorReady (editorInstance) {
         // 这里可以拿到ueditor的实例，比如editorInstance.getContent()就可以拿到编辑器的html内容
         // editorInstance.execCommand('serverparam', editor => {
         //   // 携带其他参数
@@ -79,7 +88,7 @@
       text-align: left;
     }
   }
-  .ant-editor-info{
-    max-width:1000px;
+  .ant-editor-info {
+    max-width: 1000px;
   }
 </style>
