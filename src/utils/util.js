@@ -1,11 +1,12 @@
+// 现在时间
 export function timeFix () {
   const time = new Date()
   const hour = time.getHours()
   return hour < 9 ? '早上好' : hour <= 11 ? '上午好' : hour <= 13 ? '中午好' : hour < 20 ? '下午好' : '晚上好'
 }
-
+// 欢迎
 export function welcome () {
-  const arr = ['休息一会儿吧', '准备吃什么呢?', '要不要打一把 DOTA', '我猜你可能累了']
+  const arr = ['休息一会儿吧', '我猜你可能累了']
   const index = Math.floor(Math.random() * arr.length)
   return arr[index]
 }
@@ -44,7 +45,7 @@ export function handleScrollHeader (callback) {
     false
   )
 }
-
+// 判断是否是ie
 export function isIE () {
   const bw = window.navigator.userAgent
   const compare = (s) => bw.indexOf(s) >= 0
@@ -64,4 +65,13 @@ export function removeLoadingAnimate (id = '', timeout = 1500) {
   setTimeout(() => {
     document.body.removeChild(document.getElementById(id))
   }, timeout)
+}
+// json 字符串转换
+export function actionToObject (json) {
+  try {
+    return JSON.parse(json)
+  } catch (e) {
+    console.log('err', e.message)
+  }
+  return []
 }

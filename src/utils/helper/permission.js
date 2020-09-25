@@ -9,12 +9,12 @@ export const PERMISSION_ENUM = {
   'import': { key: 'import', label: '导入' },
   'export': { key: 'export', label: '导出' }
 }
-
+// 插件
 function plugin (Vue) {
   if (plugin.installed) {
     return
   }
-
+  // 添加实例方法
   !Vue.prototype.$auth && Object.defineProperties(Vue.prototype, {
     $auth: {
       get () {

@@ -5,11 +5,13 @@
     :collapsed="collapsed"
     :mediaQuery="query"
     :isMobile="isMobile"
+    :auto-hide-header="settings.autoHideHeader"
     :handleMediaQuery="handleMediaQuery"
     :handleCollapse="handleCollapse"
     :logo="logoRender"
     v-bind="settings"
   >
+    <setting-drawer :settings="settings" @change="handleSettingChange"/>
     <template v-slot:rightContentRender>
       <right-content :top-menu="settings.layout === 'topmenu'" :is-mobile="isMobile" :theme="settings.theme"/>
     </template>
@@ -21,18 +23,21 @@
 </template>
 
 <script>
-  import { updateTheme } from '@ant-design-vue/pro-layout'
+  import { baseMixin } from '@/store/app-mixin'
   import { mapState } from 'vuex'
   import { SIDEBAR_TYPE, TOGGLE_MOBILE_TYPE } from '@/store/mutation-types'
 
   import defaultSettings from '@/config/defaultSettings'
   import RightContent from '@/components/GlobalHeader/RightContent'
   import GlobalFooter from '@/components/GlobalFooter'
+  import SettingDrawer from '@/components/SettingDrawer'
   import LogoImg from '../assets/logo.png'
 
   export default {
     name: 'BasicLayout',
+    mixins: [baseMixin],
     components: {
+      SettingDrawer,
       RightContent,
       GlobalFooter
     },
@@ -54,8 +59,9 @@
           primaryColor: defaultSettings.primaryColor,
           fixedHeader: defaultSettings.fixedHeader,
           fixSiderbar: defaultSettings.fixSiderbar,
+          autoHideHeader: defaultSettings.autoHideHeader,
           colorWeak: defaultSettings.colorWeak,
-
+          multiTab: defaultSettings.multiTab,
           hideHintAlert: false,
           hideCopyButton: false
         },
@@ -92,10 +98,9 @@
           }, 16)
         })
       }
-      // first update color
-      updateTheme(this.settings.primaryColor)
     },
     methods: {
+      // 设备宽度改变
       handleMediaQuery(val) {
         this.query = val
         if (this.isMobile && !val['screen-xs']) {
@@ -109,9 +114,11 @@
           // this.settings.fixSiderbar = false
         }
       },
+      // 导航
       handleCollapse(val) {
         this.collapsed = val
       },
+      // 设置改变
       handleSettingChange({ type, value }) {
         console.log('type', type, value)
         type && (this.settings[type] = value)
@@ -123,12 +130,15 @@
             if (value === 'sidemenu') {
               this.settings.contentWidth = false
             } else {
+              // 关闭侧边栏固定
               this.settings.fixSiderbar = false
+              // 布局模式
               this.settings.contentWidth = true
             }
             break
         }
       },
+      // 加载logo
       logoRender() {
         return (<img class='logo' src={LogoImg}/>)
       }

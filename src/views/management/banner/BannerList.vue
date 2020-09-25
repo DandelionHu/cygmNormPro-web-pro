@@ -137,7 +137,7 @@
             name: content,
             url: content
           }]
-          this.editForm = { id, content, others,checkbox:[1],radio:1}
+          this.editForm = { id, content, others, checkbox: [1], radio: 1 }
         } else {
           this.$confirm({
             title: '删除提示',

@@ -32,18 +32,18 @@
     components: {
       editForms
     },
-    watch:{
-      editForm:{
-        handler(){
-          this.editData= { ...this.editForm }
+    watch: {
+      editForm: {
+        handler() {
+          this.editData = { ...this.editForm }
         },
-        deep:true
+        deep: true
       }
     },
     data() {
       return {
-        labelCol:{lg: {span: 2}, sm: {span: 3}},
-        wrapperCol:{lg: {span: 16}, sm: {span: 16}},
+        labelCol: { lg: { span: 2 }, sm: { span: 3 } },
+        wrapperCol: { lg: { span: 16 }, sm: { span: 16 } },
         editData: { ...this.editForm },
         items: [
           {
@@ -55,8 +55,8 @@
             descStyle: {
               color: 'red'
             },
-            labelCol:{lg: {span: 2}, sm: {span: 3}},
-            wrapperCol:{lg: {span: 16}, sm: {span: 16}},
+            labelCol: { lg: { span: 2 }, sm: { span: 3 } },
+            wrapperCol: { lg: { span: 16 }, sm: { span: 16 } },
             required: true, // true false 是否为必须填写？
             validate: [ // required为true时 必填
               { required: true, message: '请点击上传广告图片', trigger: 'blur' },
@@ -68,7 +68,7 @@
             placeholder: '请填写图片链接', // 提示
             name: 'others',
             type: 'string'
-          },
+          }
         ]
 
       }

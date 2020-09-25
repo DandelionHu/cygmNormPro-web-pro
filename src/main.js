@@ -11,7 +11,7 @@ import ProLayout, { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import themePluginConfig from '../config/themePluginConfig' // 主题色
 
 import bootstrap from './core/bootstrap'
-import './permission' // 路由许可控制
+import './permission' // 路由许可控制 路由守卫
 import './core/lazy_use' // 按需引入
 import './utils/filter' // 全局过滤器
 import './style/global.less' // 全局样式

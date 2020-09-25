@@ -1,4 +1,5 @@
 // eslint-disable-next-line no-unused-vars
+// 省市区
 export const provinceJson = [
   {
     id: '35',

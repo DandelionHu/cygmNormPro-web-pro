@@ -6,7 +6,7 @@
       :rules="rules"
       :labelCol="labelCol"
       :wrapperCol="wrapperCol"
-      >
+    >
       <a-row>
         <a-col :span="item.elCol" v-for="(item, index) in formItems" :key="index">
           <a-form-model-item
@@ -76,7 +76,7 @@
             </a-select>
 
             <!-- 单选框 -->
-            <a-radio-group   v-if="item.type === 'radio'" :name="item.name"  v-model="formData[item.name]" :options="item.options"/>
+            <a-radio-group v-if="item.type === 'radio'" :name="item.name" v-model="formData[item.name]" :options="item.options"/>
 
             <!-- checkbox类型 -->
             <a-checkbox-group
@@ -146,15 +146,15 @@
           return {}
         }
       },
-      labelCol:{
-        type:Object,
+      labelCol: {
+        type: Object,
         default() {
           return {}
         }
 
       },
-      wrapperCol:{
-        type:Object,
+      wrapperCol: {
+        type: Object,
         default() {
           return {}
         }
@@ -208,8 +208,8 @@
       onDateChange(time, dateStrings) {
         console.log(time, dateStrings, 'time, dateStrings')
       },
-      //富文本
-      editorChange(item){
+      // 富文本
+      editorChange(item) {
         this.formData[item.keys] = item.val
       },
       onSubmit() {
@@ -299,8 +299,8 @@
             endName: item.endName || '',
             num: item.num || 1,
             descStyle: item.descStyle || '',
-            labelCol:item.labelCol,
-            wrapperCol:item.wrapperCol
+            labelCol: item.labelCol,
+            wrapperCol: item.wrapperCol
           })
         })
         // rule，验证规则
@@ -325,7 +325,7 @@
       }
     },
     mounted() {
-      console.log(this.editData,'this.editData')
+      console.log(this.editData, 'this.editData')
       this.$nextTick(() => {
         this.formData = { ...this.editData }
       })

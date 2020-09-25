@@ -27,6 +27,7 @@ import ArticleListContent from '@/components/ArticleListContent'
 import UploadImg from '@/components/UploadImg/UploadImg'
 import WangEditor from '@/components/Editor/WangEditor'
 import UEditor from '@/components/Editor/Ueditor'
+import SettingDrawer from '@/components/SettingDrawer'
 
 import Dialog from '@/components/Dialog'
 
@@ -57,5 +58,6 @@ export {
   UploadImg,
   WangEditor,
   UEditor,
+  SettingDrawer,
   Dialog
 }

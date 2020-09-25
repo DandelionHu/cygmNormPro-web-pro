@@ -2,7 +2,7 @@ import Vue from 'vue'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
 moment.locale('zh-cn')
-
+// 全局过滤器
 Vue.filter('NumberFormat', function (value) {
   if (!value) {
     return '0'

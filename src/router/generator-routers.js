@@ -21,6 +21,8 @@ const constantRouterComponents = {
   // 政策管理
   'PolicyTag': () => import(/* webpackChunkName: "fail" */'@/views/management/policy/PolicyTag'),
   'PolicyList': () => import(/* webpackChunkName: "fail" */'@/views/management/policy/PolicyList'),
+  // 消息列表
+  'MessageList': () => import(/* webpackChunkName: "fail" */'@/views/management/message/MessageList'),
   // 系统设置
   'ManagerList': () => import(/* webpackChunkName: "fail" */'@/views/management/baseManager/ManagerList'),
   'RoleList': () => import(/* webpackChunkName: "fail" */'@/views/management/baseRole/RoleList'),
@@ -57,10 +59,6 @@ export const generatorDynamicRouter = (data) => {
     // 后端数据, 根级树数组,  根级 PID
     listToTree(data, childrenNav, '0')
     const routers = generator(childrenNav)
-<<<<<<< HEAD
-    console.log(routers)
-=======
->>>>>>> 05dc83261a2e007a3cd5dc062135bdbd20957d96
     rootRouter.children = routers
     menuNav.push(rootRouter)
     menuNav.push(notFoundRouter)

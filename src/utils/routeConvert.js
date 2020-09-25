@@ -1,5 +1,5 @@
 import cloneDeep from 'lodash.clonedeep'
-
+// 转换路由路径
 export function convertRoutes (nodes) {
   if (!nodes) return null
 

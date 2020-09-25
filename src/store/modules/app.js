@@ -1,5 +1,5 @@
-import storage from 'store'
-// 存储到localstorage
+// 系统主题设置
+import storage from 'store' // 存储到localstorage
 import {
   SIDEBAR_TYPE,
   TOGGLE_MOBILE_TYPE,
@@ -93,6 +93,33 @@ const app = {
           reject(e)
         })
       })
+    },
+    ToggleTheme ({ commit }, theme) {
+      commit(TOGGLE_NAV_THEME, theme)
+    },
+    ToggleColor ({ commit }, theme) {
+      commit(TOGGLE_COLOR, theme)
+    },
+    ToggleLayoutMode ({ commit }, theme) {
+      commit(TOGGLE_LAYOUT, theme)
+    },
+    ToggleFixSiderbar ({ commit }, theme) {
+      commit(TOGGLE_FIXED_SIDEBAR, theme)
+    },
+    ToggleContentWidth ({ commit }, theme) {
+      commit(TOGGLE_CONTENT_WIDTH, theme)
+    },
+    ToggleFixedHeader ({ commit }, theme) {
+      commit(TOGGLE_FIXED_HEADER, theme)
+    },
+    ToggleFixedHeaderHidden ({ commit }, theme) {
+      commit(TOGGLE_HIDE_HEADER, theme)
+    },
+    ToggleWeak ({ commit }, theme) {
+      commit(TOGGLE_WEAK, theme)
+    },
+    ToggleMultiTab ({ commit }, theme) {
+      commit(TOGGLE_MULTI_TAB, theme)
     }
   }
 }

@@ -48,16 +48,16 @@ import {
     Tree,
     FormModel
 } from 'ant-design-vue'
-
 import Viser from 'viser-vue' // 可视化图表
-
-// ext library
+import VueClipboard from 'vue-clipboard2' // 剪切板
 import VueCropper from 'vue-cropper' // 上传图片截图
 import Dialog from '@/components/Dialog'
-import MultiTab from '@/components/MultiTab'
-import PageLoading from '@/components/PageLoading'
-import PermissionHelper from '@/utils/helper/permission' // 按钮权限名称定义
-import './directives/action' // 权限指令action
+import MultiTab from '@/components/MultiTab' // 多页面标签
+import PageLoading from '@/components/PageLoading' // 加载中
+import PermissionHelper from '@/utils/helper/permission' // 特殊权限控制
+import './directives/action' // 权限指令action 按钮权限控制
+
+VueClipboard.config.autoSetContainer = true
 
 Vue.use(ConfigProvider)
 Vue.use(Layout)
@@ -117,5 +117,6 @@ Vue.use(MultiTab)
 Vue.use(PageLoading)
 Vue.use(PermissionHelper)
 Vue.use(VueCropper)
+Vue.use(VueClipboard)
 
 process.env.NODE_ENV !== 'production' && console.warn('antd使用按需加载')

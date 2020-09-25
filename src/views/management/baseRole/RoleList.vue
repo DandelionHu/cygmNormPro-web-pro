@@ -170,6 +170,7 @@
       },
       // 查询
       getList (data) {
+        console.log(this)
         return baseRoleFindList(data).then(res => {
           return res
         })
