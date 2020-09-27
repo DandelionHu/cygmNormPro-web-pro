@@ -5,15 +5,19 @@
     :collapsed="collapsed"
     :mediaQuery="query"
     :isMobile="isMobile"
-    :auto-hide-header="settings.autoHideHeader"
     :handleMediaQuery="handleMediaQuery"
     :handleCollapse="handleCollapse"
     :logo="logoRender"
-    v-bind="settings"
+    :theme="navTheme"
+    :layout="layout"
+    :contentWidth="contentWidth"
+    :fixedHeader="fixedHeader"
+    :fixSiderbar="fixedSidebar"
   >
-    <setting-drawer :settings="settings" @change="handleSettingChange"/>
+    <setting-drawer/>
     <template v-slot:rightContentRender>
-      <right-content :top-menu="settings.layout === 'topmenu'" :is-mobile="isMobile" :theme="settings.theme"/>
+        <right-content :top-menu="layout === 'topmenu'" :is-mobile="isMobile" :theme="navTheme"/>
+        <multi-tab></multi-tab>
     </template>
     <template v-slot:footerRender>
       <global-footer/>
@@ -31,6 +35,7 @@
   import RightContent from '@/components/GlobalHeader/RightContent'
   import GlobalFooter from '@/components/GlobalFooter'
   import SettingDrawer from '@/components/SettingDrawer'
+  import MultiTab from '@/components/MultiTab'
   import LogoImg from '../assets/logo.png'
 
   export default {
@@ -39,6 +44,7 @@
     components: {
       SettingDrawer,
       RightContent,
+      MultiTab,
       GlobalFooter
     },
     data() {
@@ -48,23 +54,6 @@
         // 侧栏收起状态
         collapsed: false,
         title: defaultSettings.title,
-        settings: {
-          // 布局类型
-          layout: defaultSettings.layout, // 'sidemenu', 'topmenu'
-          // 定宽: true / 流式: false
-          contentWidth: defaultSettings.layout === 'sidemenu' ? false : defaultSettings.contentWidth === 'Fixed',
-          // 主题 'dark' | 'light'
-          theme: defaultSettings.navTheme,
-          // 主色调
-          primaryColor: defaultSettings.primaryColor,
-          fixedHeader: defaultSettings.fixedHeader,
-          fixSiderbar: defaultSettings.fixSiderbar,
-          autoHideHeader: defaultSettings.autoHideHeader,
-          colorWeak: defaultSettings.colorWeak,
-          multiTab: defaultSettings.multiTab,
-          hideHintAlert: false,
-          hideCopyButton: false
-        },
         // 媒体查询
         query: {},
         // 是否手机模式
@@ -110,33 +99,12 @@
         if (!this.isMobile && val['screen-xs']) {
           this.isMobile = true
           this.collapsed = false
-          this.settings.contentWidth = false
-          // this.settings.fixSiderbar = false
+          this.$store.dispatch('ToggleContentWidth', false)
         }
       },
       // 导航
       handleCollapse(val) {
         this.collapsed = val
-      },
-      // 设置改变
-      handleSettingChange({ type, value }) {
-        console.log('type', type, value)
-        type && (this.settings[type] = value)
-        switch (type) {
-          case 'contentWidth':
-            this.settings[type] = value === 'Fixed'
-            break
-          case 'layout':
-            if (value === 'sidemenu') {
-              this.settings.contentWidth = false
-            } else {
-              // 关闭侧边栏固定
-              this.settings.fixSiderbar = false
-              // 布局模式
-              this.settings.contentWidth = true
-            }
-            break
-        }
       },
       // 加载logo
       logoRender() {

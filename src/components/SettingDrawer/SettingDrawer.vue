@@ -17,7 +17,7 @@
               </template>
               <div class="setting-drawer-index-item" @click="handleMenuTheme('dark')">
                 <img src="https://gw.alipayobjects.com/zos/rmsportal/LCkqqYNmvBEbokSDscrm.svg" alt="dark">
-                <div class="setting-drawer-index-selectIcon" v-if="settings.theme === 'dark'">
+                <div class="setting-drawer-index-selectIcon" v-if="navTheme === 'dark'">
                   <a-icon type="check"/>
                 </div>
               </div>
@@ -28,7 +28,7 @@
               </template>
               <div class="setting-drawer-index-item" @click="handleMenuTheme('light')">
                 <img src="https://gw.alipayobjects.com/zos/rmsportal/jpRkZQMyYRryryPNtyIC.svg" alt="light">
-                <div class="setting-drawer-index-selectIcon" v-if="settings.theme !== 'dark'">
+                <div class="setting-drawer-index-selectIcon" v-if="navTheme !== 'dark'">
                   <a-icon type="check"/>
                 </div>
               </div>
@@ -43,7 +43,7 @@
                 {{ item.key }}
               </template>
               <a-tag :color="item.color" @click="changeColor(item.color)">
-                <a-icon type="check" v-if="item.color === settings.primaryColor"></a-icon>
+                <a-icon type="check" v-if="item.color === primaryColor"></a-icon>
               </a-tag>
             </a-tooltip>
           </div>
@@ -57,7 +57,7 @@
               </template>
               <div class="setting-drawer-index-item" @click="handleLayout('sidemenu')">
                 <img src="https://gw.alipayobjects.com/zos/rmsportal/JopDzEhOqwOjeNTXkoje.svg" alt="sidemenu">
-                <div class="setting-drawer-index-selectIcon" v-if="settings.layout === 'sidemenu'">
+                <div class="setting-drawer-index-selectIcon" v-if="layout === 'sidemenu'">
                   <a-icon type="check"/>
                 </div>
               </div>
@@ -68,7 +68,7 @@
               </template>
               <div class="setting-drawer-index-item" @click="handleLayout('topmenu')">
                 <img src="https://gw.alipayobjects.com/zos/rmsportal/KDNDBbriJhLwuqMoxcAr.svg" alt="topmenu">
-                <div class="setting-drawer-index-selectIcon" v-if="settings.layout !== 'sidemenu'">
+                <div class="setting-drawer-index-selectIcon" v-if="layout !== 'sidemenu'">
                   <a-icon type="check"/>
                 </div>
               </div>
@@ -76,7 +76,7 @@
           </div>
           <div class="m-b20">
             <a-list :split="false">
-              <a-list-item v-if="settings.layout !== 'sidemenu'">
+              <a-list-item v-if="layout !== 'sidemenu'">
                 <a-tooltip slot="actions">
                   <template slot="title">
                     该设定仅 [顶部栏导航] 时有效
@@ -84,7 +84,7 @@
                   <a-select
                     size="small"
                     style="width: 80px;"
-                    :defaultValue="settings.contentWidth===true?'Fixed':'Fluid'"
+                    :defaultValue="contentWidth === true ? 'Fixed' : 'Fluid'"
                     @change="handleContentWidthChange">
                     <a-select-option value="Fixed">固定</a-select-option>
                     <a-select-option value="Fluid">流式</a-select-option>
@@ -95,7 +95,7 @@
                 </a-list-item-meta>
               </a-list-item>
               <a-list-item>
-                <a-switch slot="actions" size="small" :defaultChecked="settings.fixedHeader" @change="handleFixedHeader"/>
+                <a-switch slot="actions" size="small" :defaultChecked="fixedHeader" @change="handleFixedHeader"/>
                 <a-list-item-meta>
                   <div slot="title">固定 Header</div>
                 </a-list-item-meta>
@@ -104,27 +104,13 @@
                 <a-switch
                   slot="actions"
                   size="small"
-                  :disabled="(settings.layout === 'topmenu')"
-                  :defaultChecked="settings.fixSiderbar"
+                  :disabled="(layout === 'topmenu')"
+                  :defaultChecked="fixedSidebar"
                   @change="handleFixSiderbar"/>
                 <a-list-item-meta>
-                  <div slot="title" :style="{ textDecoration: settings.layout === 'topmenu' ? 'line-through' : 'unset' }">
+                  <div slot="title" :style="{ textDecoration: layout === 'topmenu' ? 'line-through' : 'unset' }">
                     固定侧边菜单
                   </div>
-                </a-list-item-meta>
-              </a-list-item>
-              <a-list-item>
-                <a-switch
-                  slot="actions"
-                  size="small"
-                  :disabled="!settings.fixedHeader"
-                  :defaultChecked="settings.autoHideHeader"
-                  @change="handleFixedHeaderHidden"/>
-                <a-list-item-meta>
-                  <a-tooltip slot="title" placement="left">
-                    <template slot="title">固定 Header 时可配置</template>
-                    <div :style="{ opacity: !settings.fixedHeader ? '0.5' : '1' }">下滑时隐藏 Header</div>
-                  </a-tooltip>
                 </a-list-item-meta>
               </a-list-item>
             </a-list>
@@ -136,13 +122,13 @@
           <div>
             <a-list :split="false">
               <a-list-item>
-                <a-switch slot="actions" size="small" :defaultChecked="settings.colorWeak" @change="onColorWeak"/>
+                <a-switch slot="actions" size="small" :defaultChecked="colorWeak" @change="onColorWeak"/>
                 <a-list-item-meta>
                   <div slot="title">色弱模式</div>
                 </a-list-item-meta>
               </a-list-item>
               <a-list-item>
-                <a-switch slot="actions" size="small" :defaultChecked="settings.multiTab" @change="onMultiTab"/>
+                <a-switch slot="actions" size="small" :defaultChecked="multiTab" @change="onMultiTab"/>
                 <a-list-item-meta>
                   <div slot="title">多页签模式</div>
                 </a-list-item-meta>
@@ -163,17 +149,13 @@
   import SettingItem from './SettingItem'
   import config from '@/config/defaultSettings'
   import { updateTheme, updateColorWeak, colorList } from './settingConfig'
+  import { baseMixin } from '@/store/app-mixin'
 
   export default {
     components: {
       SettingItem
     },
-    mixins: [],
-    props: {
-      settings: {
-        type: Object
-      }
-    },
+    mixins: [baseMixin],
     data() {
       return {
         visible: false,
@@ -182,10 +164,12 @@
     },
     watch: {},
     mounted() {
+      console.log(this.contentWidth)
       // 更新主题
-      updateTheme(this.settings.primaryColor)
-      if (this.settings.colorWeak !== config.colorWeak) {
-        updateColorWeak(this.settings.colorWeak)
+      updateTheme(this.primaryColor)
+      // 缓存不等于初始化配置
+      if (this.colorWeak !== config.colorWeak) {
+        updateColorWeak(this.colorWeak)
       }
     },
     methods: {
@@ -201,42 +185,31 @@
       // 色弱模式
       onColorWeak(checked) {
         this.$store.dispatch('ToggleWeak', checked)
-        this.$emit('change', {
-          type: 'colorWeak',
-          value: checked
-        })
         updateColorWeak(checked)
       },
       // 多标签页
       onMultiTab(checked) {
         this.$store.dispatch('ToggleMultiTab', checked)
-        this.$emit('change', {
-          type: 'multiTab',
-          value: checked
-        })
       },
       // 整体风格设置
       handleMenuTheme(theme) {
         // 更新localstorage
         this.$store.dispatch('ToggleTheme', theme)
-        this.$emit('change', {
-          type: 'theme',
-          value: theme
-        })
       },
       // 导航模式
       handleLayout(mode) {
         this.$store.dispatch('ToggleLayoutMode', mode)
-        this.$emit('change', {
-          type: 'layout',
-          value: mode
-        })
-        // 因为顶部菜单不能固定左侧菜单栏，所以强制关闭
-        this.handleFixSiderbar(false)
+        if (mode === 'sidemenu') {
+          // 流式
+          this.$store.dispatch('ToggleContentWidth', false)
+        } else {
+          // 关闭侧边栏固定 因为顶部菜单不能固定左侧菜单栏，所以强制关闭
+          this.handleFixSiderbar(false)
+        }
       },
       // 侧边栏固定
       handleFixSiderbar(fixed) {
-        if (this.settings.layout === 'topmenu') {
+        if (this.layout === 'topmenu') {
           this.$store.dispatch('ToggleFixSiderbar', false)
           return
         }
@@ -244,38 +217,18 @@
       },
       // 布局模式
       handleContentWidthChange(type) {
-        this.$store.dispatch('ToggleContentWidth', type)
-        this.$emit('change', {
-          type: 'contentWidth',
-          value: type
-        })
+        this.$store.dispatch('ToggleContentWidth', type === 'Fixed')
       },
       // 改变主题色
       changeColor(color) {
-        if (this.settings.primaryColor !== color) {
+        if (this.primaryColor !== color) {
           this.$store.dispatch('ToggleColor', color)
-          this.$emit('change', {
-            type: 'primaryColor',
-            value: color
-          })
           updateTheme(color)
         }
       },
       // 固定头部
       handleFixedHeader(fixed) {
         this.$store.dispatch('ToggleFixedHeader', fixed)
-        this.$emit('change', {
-          type: 'fixedHeader',
-          value: fixed
-        })
-      },
-      // 下滑是隐藏头部
-      handleFixedHeaderHidden(autoHidden) {
-        this.$store.dispatch('ToggleFixedHeaderHidden', autoHidden)
-        this.$emit('change', {
-          type: 'autoHideHeader',
-          value: autoHidden
-        })
       }
     }
   }

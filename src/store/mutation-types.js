@@ -16,8 +16,6 @@ export const TOGGLE_FIXED_HEADER = 'fixed_header'
 export const TOGGLE_FIXED_SIDEBAR = 'fixed_sidebar'
 // 内容去宽度
 export const TOGGLE_CONTENT_WIDTH = 'content_width'
-// 头部隐藏
-export const TOGGLE_HIDE_HEADER = 'auto_hide_header'
 // 颜色
 export const TOGGLE_COLOR = 'color'
 // 弱色

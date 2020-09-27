@@ -13,15 +13,15 @@
  */
 
 export default {
+  layout: 'sidemenu', // nav menu position: `sidemenu` or `topmenu`
   navTheme: 'dark', // theme for nav menu light
   primaryColor: '#00b38b', // 默认主题色
-  layout: 'sidemenu', // nav menu position: `sidemenu` or `topmenu`
-  contentWidth: 'Fixed', // layout of content: `Fluid` or `Fixed`, only works when layout is topmenu
+  contentWidth: false, // layout of content: `Fluid` or `Fixed`, only works when layout is topmenu
   fixedHeader: true, // 固定 Header
   fixSiderbar: true, // 固定 siderbar
-  autoHideHeader: true, // 下滑是隐藏头部
   colorWeak: false,
-  multiTab: false,
+  multiTab: true,
+  lang: 'zh-CN',
   menu: {
     locale: false
   },

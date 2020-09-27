@@ -36,6 +36,7 @@ ol {
 .table-alert {
   margin-bottom: 16px;
 }
+
 // 数据列表 操作
 .table-operator {
   margin-bottom: 18px;
@@ -44,6 +45,7 @@ ol {
     margin-right: 8px;
   }
 }
+
 // 数据列表 搜索条件
 .table-page-search-wrapper {
 
@@ -64,6 +66,7 @@ ol {
         padding-right: 8px;
         width: auto;
       }
+
       .ant-form-item-control {
         height: 32px;
         line-height: 32px;
@@ -82,11 +85,13 @@ ol {
   .ant-table {
     width: 100%;
     overflow-x: auto;
+
     &-thead > tr,
     &-tbody > tr {
       > th,
       > td {
         white-space: pre;
+
         > span {
           display: block;
         }
@@ -94,18 +99,103 @@ ol {
     }
   }
 }
+
 .ant-page-header {
-  padding:12px 12px;
+  padding: 12px 12px;
 }
-.ant-pro-page-header-wrap-children-content{
-  margin:12px 12px 0;
+
+.ant-pro-page-header-wrap-children-content {
+  margin: 12px 12px 0;
 }
+
 .ant-layout-footer {
   padding: 0px 50px 15px 50px;
-  .ant-pro-global-footer{
-    margin:0px;
+
+  .ant-pro-global-footer {
+    margin: 0px;
   }
 }
+
 .ant-card-meta-description {
   color: rgba(0, 0, 0, 0.6);
 }
+
+// 头部处理
+.sidemenu {
+  .ant-layout-header {
+    height: 86px;
+    line-height: 45px;
+
+    .ant-pro-global-header {
+      height: 86px;
+
+      .ant-pro-global-header-trigger {
+        height: 45px;
+        padding: calc((64px - 41px) / 2) 24px;
+      }
+
+      .ant-pro-global-header-index-right {
+        height: 45px;
+      }
+
+      .ant-pro-multi-tab {
+        margin: 0px;
+        height: 41px;
+      }
+    }
+  }
+}
+
+.topmenu {
+  .ant-layout-header {
+    height: 104px;
+    .ant-pro-top-nav-header {
+      height: 104px;
+      .ant-pro-top-nav-header-main {
+        flex-wrap: wrap;
+        height: 104px;
+        padding-left:0px;
+        .ant-pro-top-nav-header-left {
+          height: 64px;
+          padding-left: 26px;
+        }
+
+        .ant-pro-top-nav-header-menu {
+          height: 64px;
+        }
+
+        .ant-pro-global-header-index-right {
+          height: 64px;
+        }
+
+        .ant-pro-multi-tab {
+          margin: 0px;
+          width: 100%;
+          height: 41px;
+        }
+      }
+    }
+    .ant-pro-global-header {
+      height: 86px;
+
+      .ant-pro-global-header-trigger {
+        height: 45px;
+        padding: calc((64px - 41px) / 2) 24px;
+      }
+
+      .ant-pro-global-header-index-right {
+        height: 45px;
+      }
+
+      .ant-pro-multi-tab {
+        margin: 0px;
+        height: 41px;
+      }
+    }
+  }
+}
+
+
+
+
+

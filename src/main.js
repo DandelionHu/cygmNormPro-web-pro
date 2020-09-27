@@ -10,7 +10,7 @@ import { VueAxios } from './utils/request' // http
 import ProLayout, { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import themePluginConfig from '../config/themePluginConfig' // 主题色
 
-import bootstrap from './core/bootstrap'
+import bootstrap from './core/bootstrap' // 读取缓存信息
 import './permission' // 路由许可控制 路由守卫
 import './core/lazy_use' // 按需引入
 import './utils/filter' // 全局过滤器

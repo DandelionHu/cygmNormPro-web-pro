@@ -8,7 +8,6 @@ import {
   TOGGLE_FIXED_HEADER,
   TOGGLE_FIXED_SIDEBAR,
   TOGGLE_CONTENT_WIDTH,
-  TOGGLE_HIDE_HEADER,
   TOGGLE_COLOR,
   TOGGLE_WEAK,
   TOGGLE_MULTI_TAB,
@@ -22,14 +21,13 @@ const app = {
     sideCollapsed: false,
     isMobile: false,
     theme: 'dark',
-    layout: '',
-    contentWidth: '',
-    fixedHeader: false,
-    fixedSidebar: false,
-    autoHideHeader: false,
-    color: '',
+    layout: 'sidemenu',
+    contentWidth: false,
+    fixedHeader: true,
+    fixedSidebar: true,
+    color: '#00b38b',
     weak: false,
-    multiTab: true,
+    multiTab: false,
     lang: 'zh-CN',
     _antLocale: {}
   },
@@ -60,10 +58,6 @@ const app = {
     [TOGGLE_CONTENT_WIDTH]: (state, type) => {
       state.contentWidth = type
       storage.set(TOGGLE_CONTENT_WIDTH, type)
-    },
-    [TOGGLE_HIDE_HEADER]: (state, type) => {
-      state.autoHideHeader = type
-      storage.set(TOGGLE_HIDE_HEADER, type)
     },
     [TOGGLE_COLOR]: (state, color) => {
       state.color = color
@@ -112,9 +106,6 @@ const app = {
     ToggleFixedHeader ({ commit }, theme) {
       commit(TOGGLE_FIXED_HEADER, theme)
     },
-    ToggleFixedHeaderHidden ({ commit }, theme) {
-      commit(TOGGLE_HIDE_HEADER, theme)
-    },
     ToggleWeak ({ commit }, theme) {
       commit(TOGGLE_WEAK, theme)
     },
@@ -123,5 +114,4 @@ const app = {
     }
   }
 }
-
 export default app
