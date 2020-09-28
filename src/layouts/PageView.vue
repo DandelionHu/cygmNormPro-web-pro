@@ -1,7 +1,7 @@
 <template>
-  <page-header-wrapper>
+<!--  <page-header-wrapper>-->
     <router-view />
-  </page-header-wrapper>
+<!--  </page-header-wrapper>-->
 </template>
 
 <script>

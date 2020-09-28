@@ -1,4 +1,4 @@
-import { BasicLayout, BlankLayout, PageView, RouteView } from '@/layouts'
+import { BasicLayout, BlankLayout, PageView, RouteView, RouteViewPage } from '@/layouts'
 // 前端路由表
 const constantRouterComponents = {
   // 基础页面 layout 必须引入
@@ -6,6 +6,7 @@ const constantRouterComponents = {
   BlankLayout: BlankLayout,
   RouteView: RouteView,
   PageView: PageView,
+  RouteViewPage: RouteViewPage,
   // 你需要动态引入的页面组件
   'Exception404': () => import(/* webpackChunkName: "fail" */ '@/views/management/exception/404'),
   'HomeList': () => import(/* webpackChunkName: "fail" */'@/views/management/home/HomeList'),

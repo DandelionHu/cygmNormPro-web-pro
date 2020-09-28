@@ -1,6 +1,5 @@
 <template>
-  <page-header-wrapper>
-    <a-card :body-style="{padding: '15px 20px'}" :bordered="false">
+  <a-card :body-style="{padding: '15px 20px'}" :bordered="false">
       <a-form layout="inline">
         <a-form-item
           class="width250"
@@ -84,7 +83,6 @@
         </a-form>
       </a-modal>
     </a-card>
-  </page-header-wrapper>
 </template>
 
 <script>

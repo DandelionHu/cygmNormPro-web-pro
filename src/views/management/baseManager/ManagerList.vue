@@ -1,5 +1,4 @@
 <template>
-  <page-header-wrapper>
     <a-card :body-style="{padding: '15px 20px'}" :bordered="false">
       <div v-show="showList">
         <a-form layout="inline">
@@ -64,7 +63,6 @@
       <!--添加页面-->
       <manager-add v-if="showAdd" @editClose="editClose" :editID="editID"></manager-add>
     </a-card>
-  </page-header-wrapper>
 </template>
 
 <script>

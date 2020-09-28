@@ -81,10 +81,9 @@ const vueConfig = {
       less: {
         modifyVars: {
           // less vars，customize ant design theme
-
-          // 'primary-color': '#F5222D',
-          // 'link-color': '#F5222D',
-          'border-radius-base': '2px'
+          'border-radius-base': '2px',
+          // 'border-color-base': '#00b38b',
+          'font-size-base': '14px'
         },
         // DO NOT REMOVE THIS LINE
         javascriptEnabled: true
@@ -103,7 +102,8 @@ const vueConfig = {
     // 代理服务器
     proxy: {
       '/normProBase': {
-        target: 'http://192.168.0.194:8081/',
+        // target: 'http://192.168.0.194:8081/',
+        target: 'http://139.159.154.140:8280/',
         ws: false,
         changeOrigin: true,
         pathRewrite: {

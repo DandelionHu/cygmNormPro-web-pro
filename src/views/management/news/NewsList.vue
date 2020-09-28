@@ -1,74 +1,74 @@
 <template>
-  <page-header-wrapper>
-    <a-card :body-style="{padding: '15px 20px'}" :bordered="false">
-      <div v-show="showList">
-        <a-form layout="inline">
-          <a-form-item
-            class="width250"
-            label="关键字"
-            :labelCol="{span: 8 }"
-            :wrapperCol="{span: 16 }">
-            <a-input name="keyword" placeholder="请输入关键字" v-model="queryParam.keyword" @change="onSearch"/>
-          </a-form-item>
-          <a-form-item
-            label="创建日期"
-            :labelCol="{span: 6 }"
-            :wrapperCol="{span: 18 }">
-            <a-range-picker
-              :placeholder="['开始日期', '结束日期']"
-              v-model="searchData"
-              @change="onDateChange"/>
-          </a-form-item>
-          <a-form-item>
-            <a-button type="primary" @click="onSearch">查询</a-button>
-            <a-button class="m-l10" @click="onReset" type="primary" ghost>重置</a-button>
-            <a-button class="m-l10" @click="onAdd" type="normal">添加</a-button>
-          </a-form-item>
-        </a-form>
-        <s-table
-          ref="table"
-          size="default"
-          rowKey="id"
-          :columns="columns"
-          :data="loadData"
-          showPagination="auto"
-          class="m-t10"
-        >
-          <img :src="text" slot="picture" slot-scope="text"/>
-          <span slot="state" slot-scope="text">
-            {{ text | state }}
-          </span>
-          <span slot="isRecommend" slot-scope="text">
-            {{ text | isRecommend }}
-          </span>
-          <span slot="releaseTime" slot-scope="text">
-            {{ text | dayjs }}
-          </span>
-          <span slot="action" slot-scope="text, record">
-            <template>
-              <a class="table-look" @click="handleLook(record)">查看</a>
+  <a-card :body-style="{padding: '15px 20px'}" :bordered="false">
+    <div v-show="showList">
+      <a-form layout="inline">
+        <a-form-item
+          class="width250"
+          label="关键字"
+          :labelCol="{span: 8 }"
+          :wrapperCol="{span: 16 }">
+          <a-input name="keyword" placeholder="请输入关键字" v-model="queryParam.keyword" @change="onSearch"/>
+        </a-form-item>
+        <a-form-item
+          label="创建日期"
+          :labelCol="{span: 6 }"
+          :wrapperCol="{span: 18 }">
+          <a-range-picker
+            :placeholder="['开始日期', '结束日期']"
+            v-model="searchData"
+            @change="onDateChange"/>
+        </a-form-item>
+        <a-form-item>
+          <a-button type="primary" @click="onSearch">查询</a-button>
+          <a-button class="m-l10" @click="onReset" type="primary" ghost>重置</a-button>
+          <a-button class="m-l10" @click="onAdd" type="normal">添加</a-button>
+        </a-form-item>
+      </a-form>
+      <s-table
+        ref="table"
+        size="default"
+        rowKey="id"
+        :columns="columns"
+        :data="loadData"
+        showPagination="auto"
+        class="m-t10"
+      >
+        <img :src="text" slot="picture" slot-scope="text"/>
+        <span slot="state" slot-scope="text">
+          {{ text | state }}
+        </span>
+        <span slot="isRecommend" slot-scope="text">
+          {{ text | isRecommend }}
+        </span>
+        <span slot="releaseTime" slot-scope="text">
+          {{ text | dayjs }}
+        </span>
+        <span slot="action" slot-scope="text, record">
+          <template>
+            <a class="table-look" @click="handleLook(record)">查看</a>
+            <a-divider type="vertical"/>
+            <a class="table-edit" @click="handleEdit(record)">编辑</a>
+            <a-divider type="vertical"/>
+            <template v-if="record.state === 1 || record.state === 3">
+              <a
+                class="table-again"
+                @click="handleState(record)">{{ record.state==1?'禁用':record.state==3?'启用':'' }}</a>
               <a-divider type="vertical"/>
-              <a class="table-edit" @click="handleEdit(record)">编辑</a>
-              <a-divider type="vertical"/>
-              <template v-if="record.state === 1 || record.state === 3">
-                <a class="table-again"  @click="handleState(record)">{{ record.state==1?'禁用':record.state==3?'启用':''}}</a>
-                <a-divider type="vertical"/>
-              </template>
-              <template v-if="record.state === 2">
-                <a class="table-again"  @click="handleState(record)">审核</a>
-                <a-divider type="vertical" />
-              </template>
-              <a class="table-delete" @click="handleDelete(record)">删除</a>
             </template>
-          </span>
-        </s-table>
-      </div>
-      <!-- 详情页面 -->
-      <news-info v-if="showInfo" @editClose="editClose" :editID="editID"></news-info>
-      <!--添加页面-->
-      <news-add v-if="showAdd" @editClose="editClose" :editID="editID"></news-add>
-    </a-card>
-  </page-header-wrapper>
+            <template v-if="record.state === 2">
+              <a class="table-again" @click="handleState(record)">审核</a>
+              <a-divider type="vertical"/>
+            </template>
+            <a class="table-delete" @click="handleDelete(record)">删除</a>
+          </template>
+        </span>
+      </s-table>
+    </div>
+    <!-- 详情页面 -->
+    <news-info v-if="showInfo" @editClose="editClose" :editID="editID"></news-info>
+    <!--添加页面-->
+    <news-add v-if="showAdd" @editClose="editClose" :editID="editID"></news-add>
+  </a-card>
 </template>
 
 <script>
@@ -76,6 +76,7 @@
   import { STable, Ellipsis } from '@/components'
   import NewsInfo from './NewsInfo'
   import NewsAdd from './NewsAdd'
+
   export default {
     name: 'NewsList',
     components: {
@@ -84,7 +85,7 @@
       NewsInfo,
       NewsAdd
     },
-    data () {
+    data() {
       return {
         showList: true,
         showAdd: false,
@@ -181,18 +182,17 @@
         return isRecommendObj[value] || ''
       }
     },
-    computed: {
-    },
-    created () {
+    computed: {},
+    created() {
     },
     methods: {
       // 搜索
-      onSearch () {
+      onSearch() {
         // 刷新到第一页
         this.$refs.table.refresh(true)
       },
       // 重置
-      onReset () {
+      onReset() {
         this.queryParam = {}
         this.searchData = []
         this.onSearch()
@@ -204,7 +204,7 @@
         this.onSearch()
       },
       // 查询
-      getList (data) {
+      getList(data) {
         return baseNewsFindList(data).then(res => {
           return res
         })
@@ -217,7 +217,7 @@
         this.showAdd = true
       },
       // 查看
-      handleLook (data) {
+      handleLook(data) {
         this.editID = data.id
         this.showList = false
         this.showAdd = false
@@ -231,7 +231,7 @@
         this.showAdd = true
       },
       // 编辑关闭
-      editClose () {
+      editClose() {
         this.showList = true
         this.showAdd = false
         this.showInfo = false

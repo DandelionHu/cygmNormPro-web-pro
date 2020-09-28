@@ -17,12 +17,15 @@
     <setting-drawer/>
     <template v-slot:rightContentRender>
         <right-content :top-menu="layout === 'topmenu'" :is-mobile="isMobile" :theme="navTheme"/>
-        <multi-tab></multi-tab>
     </template>
+    <a-layout-content>
+      <multi-tab v-if="multiTab" :contentWidth="contentWidth" :fixedHeader="fixedHeader" :collapsed="collapsed"></multi-tab>
+      <transition name="page-transition"></transition>
+    </a-layout-content>
     <template v-slot:footerRender>
       <global-footer/>
     </template>
-    <router-view/>
+    <page-view></page-view>
   </pro-layout>
 </template>
 
@@ -36,6 +39,7 @@
   import GlobalFooter from '@/components/GlobalFooter'
   import SettingDrawer from '@/components/SettingDrawer'
   import MultiTab from '@/components/MultiTab'
+  import PageView from '@/layouts/PageView'
   import LogoImg from '../assets/logo.png'
 
   export default {
@@ -45,6 +49,7 @@
       SettingDrawer,
       RightContent,
       MultiTab,
+      PageView,
       GlobalFooter
     },
     data() {

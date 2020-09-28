@@ -202,9 +202,6 @@
         if (mode === 'sidemenu') {
           // 流式
           this.$store.dispatch('ToggleContentWidth', false)
-        } else {
-          // 关闭侧边栏固定 因为顶部菜单不能固定左侧菜单栏，所以强制关闭
-          this.handleFixSiderbar(false)
         }
       },
       // 侧边栏固定

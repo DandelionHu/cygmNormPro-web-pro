@@ -1,5 +1,4 @@
 <template>
-  <page-header-wrapper>
     <a-card :body-style="{padding: '15px 20px'}" :bordered="false">
       <div v-show="showList">
         <a-form layout="inline">
@@ -60,7 +59,6 @@
       <!-- 详情页面 -->
       <resume-info v-if="!showList" @editClose="editClose" :editID="editID"></resume-info>
     </a-card>
-  </page-header-wrapper>
 </template>
 
 <script>

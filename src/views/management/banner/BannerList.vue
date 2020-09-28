@@ -1,5 +1,4 @@
 <template>
-  <page-header-wrapper>
     <a-card
       :body-style="{padding: '15px 20px'}"
       :bordered="false">
@@ -46,7 +45,6 @@
         @dataChange="dataChange"
         @onCancel="showAdd = false"/>
     </a-card>
-  </page-header-wrapper>
 </template>
 <script>
   import { baseFieldFindList, baseFieldDeleteAll } from '@/api/cygmNormPro'

@@ -1,5 +1,4 @@
 <template>
-  <page-header-wrapper>
     <a-card :body-style="{padding: '15px 20px'}" :bordered="false">
       <a-row>
         <a-col :span="6">
@@ -92,7 +91,6 @@
         </a-col>
       </a-row>
     </a-card>
-  </page-header-wrapper>
 </template>
 <script>
   import { baseAuthorityFindList, baseAuthoritySaveAuthority, baseAuthorityFindById, baseAuthorityDeleteAll, baseAuthorityDeleteRealById } from '@/api/cygmNormPro'
