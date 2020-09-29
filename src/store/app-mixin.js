@@ -1,5 +1,5 @@
 import { mapState } from 'vuex'
-
+// 混入对象 被合并到最终的选项中 先调用
 const baseMixin = {
   computed: {
     ...mapState({

@@ -20,11 +20,13 @@ const action = Vue.directive('action', {
   inserted: function (el, binding, vnode) {
     // arg传给指令的参数 add、edit、delete
     const actionName = binding.arg
-    // 获取权限
-    const roles = store.getters.roles
-    if (!roles.includes(actionName)) {
-      // 没有权限，删除当前el
-      el.parentNode && el.parentNode.removeChild(el) || (el.style.display = 'none')
+    if (actionName) {
+      // 获取权限
+      const roles = store.getters.roles
+      if (!roles.includes(actionName)) {
+        // 没有权限，删除当前el
+        el.parentNode && el.parentNode.removeChild(el) || (el.style.display = 'none')
+      }
     }
   }
 })

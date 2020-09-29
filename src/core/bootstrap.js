@@ -11,7 +11,7 @@ import {
 } from '@/store/mutation-types'
 import defaultSettings from '@/config/defaultSettings'
 
-// 获取缓存值，缓存没有拿初始化配置
+// 获取系统主题缓存值，缓存没有拿初始化配置
 export default function Initializer () {
   store.commit(TOGGLE_LAYOUT, storage.get(TOGGLE_LAYOUT, defaultSettings.layout))
   store.commit(TOGGLE_NAV_THEME, storage.get(TOGGLE_NAV_THEME, defaultSettings.navTheme))

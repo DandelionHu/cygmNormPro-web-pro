@@ -48,8 +48,7 @@
 </template>
 <script>
   import { baseFieldFindList, baseFieldDeleteAll } from '@/api/cygmNormPro'
-  import TableFiltrate from '@/components/TableFiltrate/index'
-  import { STable } from '@/components'
+  import { STable, TableFiltrate } from '@/components'
   import BannerAdd from './BannerAdd'
 
   export default {

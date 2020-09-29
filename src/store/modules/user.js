@@ -2,7 +2,7 @@ import localStorage from 'store'
 import { login, logout, findLoginList, findLoginKeys } from '@/api/login'
 import { ACCESS_TOKEN, ACCESS_INFO } from '@/store/mutation-types'
 import { welcome } from '@/utils/util'
-
+// 用户信息
 const user = {
   state: {
     token: '',

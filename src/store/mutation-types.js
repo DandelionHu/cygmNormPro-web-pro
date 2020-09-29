@@ -24,12 +24,12 @@ export const TOGGLE_WEAK = 'weak'
 export const TOGGLE_MULTI_TAB = 'multi_tab'
 // 使用语言
 export const APP_LANGUAGE = 'app_language'
-
+// 布局模式
 export const CONTENT_WIDTH_TYPE = {
   Fluid: 'Fluid',
   Fixed: 'Fixed'
 }
-
+// 风格
 export const NAV_THEME = {
   LIGHT: 'light',
   DARK: 'dark'

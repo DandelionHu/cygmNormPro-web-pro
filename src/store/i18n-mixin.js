@@ -1,5 +1,5 @@
 import { mapState } from 'vuex'
-
+// 语言设置的混入
 const i18nMixin = {
   computed: {
     ...mapState({
