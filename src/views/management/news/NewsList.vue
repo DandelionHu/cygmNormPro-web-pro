@@ -1,29 +1,11 @@
 <template>
   <a-card :body-style="{padding: '15px 20px'}" :bordered="false">
     <div v-show="showList">
-      <a-form layout="inline">
-        <a-form-item
-          class="width250"
-          label="关键字"
-          :labelCol="{span: 8 }"
-          :wrapperCol="{span: 16 }">
-          <a-input name="keyword" placeholder="请输入关键字" v-model="queryParam.keyword" @change="onSearch"/>
-        </a-form-item>
-        <a-form-item
-          label="创建日期"
-          :labelCol="{span: 6 }"
-          :wrapperCol="{span: 18 }">
-          <a-range-picker
-            :placeholder="['开始日期', '结束日期']"
-            v-model="searchData"
-            @change="onDateChange"/>
-        </a-form-item>
-        <a-form-item>
-          <a-button type="primary" @click="onSearch">查询</a-button>
-          <a-button class="m-l10" @click="onReset" type="primary" ghost>重置</a-button>
-          <a-button class="m-l10" @click="onAdd" type="normal">添加</a-button>
-        </a-form-item>
-      </a-form>
+      <table-filtrate
+        :filtrate="filtrate"
+        @btnClick="btnClick"
+        @selectUserChange="selectUserChange"
+        @filtrateChange="filtrateChange"></table-filtrate>
       <s-table
         ref="table"
         size="default"
@@ -72,8 +54,8 @@
 </template>
 
 <script>
-  import { baseNewsFindList, baseNewsDeleteAll, baseNewsUpdateState } from '@/api/cygmNormPro'
-  import { STable, Ellipsis } from '@/components'
+  import { baseNewsFindList, baseNewsDeleteAll, baseNewsUpdateState, baseFieldFindList } from '@/api/cygmNormPro'
+  import { STable, Ellipsis, TableFiltrate } from '@/components'
   import NewsInfo from './NewsInfo'
   import NewsAdd from './NewsAdd'
 
@@ -82,6 +64,7 @@
     components: {
       STable,
       Ellipsis,
+      TableFiltrate,
       NewsInfo,
       NewsAdd
     },
@@ -91,6 +74,85 @@
         showAdd: false,
         showInfo: false,
         editID: '', // 编辑id
+        filtrate: {
+          className: '',
+          seekList: [ // 表格的筛选项
+            {
+              type: 'input', // 文本框搜索   input（文本框）  select（下拉框）  date(日期) selectUsr（选择用户)
+              name: 'keyword', // 对应的字段
+              label: '关键字', // 文字描述
+              placeholder: '请输入关键字',
+              defaultValue: ''// 默认值
+            },
+            {
+              type: 'select',
+              name: 'fieldId',
+              label: '选择栏目',
+              placeholder: '请选择',
+              defaultValue: '',
+              options: [
+                {
+                  label: '全部',
+                  value: ''
+                }
+              ]
+            },
+            {
+              type: 'date',
+              name: 'date',
+              label: '创建日期',
+              startName: 'startDate', // 开始日期字段
+              endName: 'endDate', // 结束日期字段
+              placeholder: '请选择日期',
+              defaultValue: []// 默认值
+            },
+            {
+              type: 'radioDate',
+              name: 'radio',
+              label: '',
+              startName: 'startDate', // 开始日期字段
+              endName: 'endDate', // 结束日期字段
+              defaultValue: 1,
+              options: [
+                {
+                  label: '今天',
+                  value: 1
+                },
+                {
+                  label: '昨天',
+                  value: 2
+                },
+                {
+                  label: '本周',
+                  value: 3
+                },
+                {
+                  label: '本月',
+                  value: 4
+                }
+              ]
+            }
+          ],
+          // 表格按钮
+          headBtnList: [
+            {
+              name: '查询',
+              type: 'primary',
+              className: ''
+            },
+            {
+              name: '重置',
+              type: 'primary',
+              ghost: true,
+              className: ''
+            },
+            {
+              name: '添加',
+              type: 'normal',
+              className: '',
+              authority: 'manager_add' // 权限
+            }]
+        },
         // 表头
         columns: [
           {
@@ -151,10 +213,9 @@
         ],
         // 查询参数
         queryParam: {},
-        // 日期
-        searchData: [],
         // 类型
         type: 1, // 1资讯，2政策
+        groups: 'groups_news',
         // 加载数据方法 必须为 Promise 对象
         loadData: parameter => {
           // 将所有可枚举属性的值从一个或多个源对象复制到目标对象
@@ -185,23 +246,27 @@
     computed: {},
     created() {
     },
+    mounted() {
+      this.getTagList()
+    },
     methods: {
-      // 搜索
-      onSearch() {
+      // 点击
+      btnClick(item) {
+        if (item.btn.name === '查询') {
+          this.onRefresh()
+        } else if (item.btn.name === '添加') {
+          this.onAdd()
+        }
+      },
+      // 选择
+      selectUserChange(item) {
+        console.log(item)
+      },
+      // 筛选 重置
+      filtrateChange(item) {
+        this.queryParam = item
         // 刷新到第一页
         this.$refs.table.refresh(true)
-      },
-      // 重置
-      onReset() {
-        this.queryParam = {}
-        this.searchData = []
-        this.onSearch()
-      },
-      // 日期
-      onDateChange(date, dateString) {
-        this.queryParam.startDate = dateString[0]
-        this.queryParam.endDate = dateString[1]
-        this.onSearch()
       },
       // 查询
       getList(data) {
@@ -308,6 +373,19 @@
               }
             }
           }
+        })
+      },
+      // 获取栏目
+      async getTagList() {
+        const data = {
+          groups: this.groups
+        }
+        const { returnValue: res } = await baseFieldFindList(data)
+        res.forEach((v, i) => {
+          this.filtrate.seekList[1].options.push({
+            label: v.title,
+            value: v.id
+          })
         })
       }
     }

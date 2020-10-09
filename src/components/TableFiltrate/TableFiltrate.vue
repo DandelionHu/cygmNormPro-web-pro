@@ -38,7 +38,8 @@
         format="YYYY-MM-DD"
         v-if="item.type === 'date'"
         @change="onDateChange"
-        :placeholder="['开始时间','结束时间']"/>
+        v-model="item.defaultValue"
+        :placeholder="['开始日期','结束日期']"/>
       <a-radio-group
         v-model="item.defaultValue"
         v-if="item.type === 'radioDate'">
@@ -81,7 +82,7 @@
 </template>
 
 <script>
-  import { getTodayDate, UnixToDate, DateToUnix } from '@/utils/dateFormat'
+  import { getTodayDate, getYesterdayDate, getCurrentWeekDate, getCurrentMonthDate } from '@/utils/dateFormat'
   export default {
     name: 'TableFiltrate',
     props: {
@@ -119,7 +120,11 @@
       // 日期选择
       onDateChange(time, dateStrings) {
         this.searchData = dateStrings
-        this.getParameter()
+        this.filtrateContent.seekList.forEach(e => {
+          if (e.type === 'radioDate') {
+            e.defaultValue = ''
+          }
+        })
       },
       // 自定义按钮的点击事件 发回父级处理
       ListBtnClick(btn) {
@@ -145,6 +150,35 @@
               obj[e.endName] = this.searchData.length ? this.searchData[1] : ''
             } else if (e.type === 'selectUser' && JSON.stringify(this.selectUser) !== '{}') {
               obj[e.name] = this.selectUser.id
+            } else if (e.type === 'radioDate') {
+              const defaultValue = e.defaultValue
+              if (defaultValue) {
+                let searchData = ''
+                switch (defaultValue) {
+                  case 1:
+                    // 今天
+                    searchData = getTodayDate()
+                    break
+                  case 2:
+                    // 昨天
+                    searchData = getYesterdayDate()
+                    break
+                  case 3:
+                    // 本周
+                    searchData = getCurrentWeekDate()
+                    break
+                  case 4:
+                    // 本月
+                    searchData = getCurrentMonthDate()
+                    break
+                }
+                obj[e.startName] = searchData[0] || ''
+                obj[e.endName] = searchData[1] || ''
+                if (this.searchData.length !== 0) {
+                  // 清空时间范围
+                  this.initDate()
+                }
+              }
             } else {
               obj[e.name] = e.defaultValue
             }
@@ -156,14 +190,20 @@
           // 通知
           this.$emit('filtrateChange', obj)
         }
+      },
+      // 初始化时间
+      initDate() {
+        this.filtrateContent.seekList.forEach(e => {
+          if (e.type === 'date') {
+            this.searchData = []
+            e.defaultValue = []
+          }
+        })
       }
     },
     mounted() {
       // 复制一份初始值 深拷贝 使用内部的数据，不影响父级初始数据
       this.filtrateContent = JSON.parse(JSON.stringify(this.filtrate))
-      console.log(getTodayDate())
-      console.log(DateToUnix('2019-02-20 2:30:00'))
-      console.log(UnixToDate(1601372827000, 'YYYYMMDD HH:mm:ss'))
     }
   }
 </script>

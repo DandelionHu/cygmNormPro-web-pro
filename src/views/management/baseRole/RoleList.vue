@@ -76,31 +76,8 @@
               label: '创建日期',
               startName: 'startDate', // 开始日期字段
               endName: 'endDate', // 结束日期字段
-              placeholder: '请选择日期'
-            },
-            {
-              type: 'radioDate',
-              name: 'radio',
-              label: '',
-              defaultValue: 1,
-              options: [
-                {
-                  label: '今天',
-                  value: 1
-                },
-                {
-                  label: '昨天',
-                  value: 2
-                },
-                {
-                  label: '本周',
-                  value: 3
-                },
-                {
-                  label: '本月',
-                  value: 4
-                }
-              ]
+              placeholder: '请选择日期',
+              defaultValue: []// 默认值
             }
           ],
           // 表格按钮
