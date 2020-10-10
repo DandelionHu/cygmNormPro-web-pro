@@ -46,7 +46,8 @@ import {
     message,
     notification,
     Tree,
-    FormModel
+    FormModel,
+    Cascader
 } from 'ant-design-vue'
 import Viser from 'viser-vue' // 可视化图表
 import VueClipboard from 'vue-clipboard2' // 剪切板
@@ -102,6 +103,7 @@ Vue.use(Statistic)
 Vue.use(Descriptions)
 Vue.use(Tree)
 Vue.use(FormModel)
+Vue.use(Cascader)
 
 Vue.prototype.$confirm = Modal.confirm
 Vue.prototype.$message = message

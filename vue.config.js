@@ -102,8 +102,8 @@ const vueConfig = {
     // 代理服务器
     proxy: {
       '/normProBase': {
-        target: 'http://192.168.0.194:8081/',
-        // target: 'http://139.159.154.140:8280/',
+        // target: 'http://192.168.0.194:8081/',
+        target: 'http://139.159.154.140:8280/',
         ws: false,
         changeOrigin: true,
         pathRewrite: {

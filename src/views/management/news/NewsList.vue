@@ -1,11 +1,11 @@
 <template>
   <a-card :body-style="{padding: '15px 20px'}" :bordered="false">
     <div v-show="showList">
-      <table-filtrate
-        :filtrate="filtrate"
-        @btnClick="btnClick"
-        @selectUserChange="selectUserChange"
-        @filtrateChange="filtrateChange"></table-filtrate>
+      <table-search :searchDataSource="searchDataSource"  @change="tableSearchChange">
+        <template v-slot:extra>
+          <a-button class="m-l10" type="normal" @click="onAdd">添加</a-button>
+        </template>
+      </table-search>
       <s-table
         ref="table"
         size="default"
@@ -55,7 +55,7 @@
 
 <script>
   import { baseNewsFindList, baseNewsDeleteAll, baseNewsUpdateState, baseFieldFindList } from '@/api/cygmNormPro'
-  import { STable, Ellipsis, TableFiltrate } from '@/components'
+  import { STable, Ellipsis, TableSearch } from '@/components'
   import NewsInfo from './NewsInfo'
   import NewsAdd from './NewsAdd'
 
@@ -64,7 +64,7 @@
     components: {
       STable,
       Ellipsis,
-      TableFiltrate,
+      TableSearch,
       NewsInfo,
       NewsAdd
     },
@@ -74,85 +74,23 @@
         showAdd: false,
         showInfo: false,
         editID: '', // 编辑id
-        filtrate: {
-          className: '',
-          seekList: [ // 表格的筛选项
-            {
-              type: 'input', // 文本框搜索   input（文本框）  select（下拉框）  date(日期) selectUsr（选择用户)
-              name: 'keyword', // 对应的字段
-              label: '关键字', // 文字描述
-              placeholder: '请输入关键字',
-              defaultValue: ''// 默认值
-            },
-            {
-              type: 'select',
-              name: 'fieldId',
-              label: '选择栏目',
-              placeholder: '请选择',
-              defaultValue: '',
-              options: [
-                {
-                  label: '全部',
-                  value: ''
-                }
-              ]
-            },
-            {
-              type: 'date',
-              name: 'date',
-              label: '创建日期',
-              startName: 'startDate', // 开始日期字段
-              endName: 'endDate', // 结束日期字段
-              placeholder: '请选择日期',
-              defaultValue: []// 默认值
-            },
-            {
-              type: 'radioDate',
-              name: 'radio',
-              label: '',
-              startName: 'startDate', // 开始日期字段
-              endName: 'endDate', // 结束日期字段
-              defaultValue: 1,
-              options: [
-                {
-                  label: '今天',
-                  value: 1
-                },
-                {
-                  label: '昨天',
-                  value: 2
-                },
-                {
-                  label: '本周',
-                  value: 3
-                },
-                {
-                  label: '本月',
-                  value: 4
-                }
-              ]
-            }
-          ],
-          // 表格按钮
-          headBtnList: [
-            {
-              name: '查询',
-              type: 'primary',
-              className: ''
-            },
-            {
-              name: '重置',
-              type: 'primary',
-              ghost: true,
-              className: ''
-            },
-            {
-              name: '添加',
-              type: 'normal',
-              className: '',
-              authority: 'manager_add' // 权限
-            }]
-        },
+        // 搜索数据源
+        searchDataSource: [
+          {
+            type: 'text', // 控件类型
+            labelText: '关键字', // 控件显示的文本
+            fieldName: 'keyword',
+            placeholder: '请输入关键字' // 默认控件的空值文本
+          },
+          {
+            labelText: '创建日期',
+            type: 'datetimeRange',
+            fieldName: 'createDate',
+            startName: 'startDate', // 开始日期字段
+            endName: 'endDate', // 结束日期字段
+            placeholder: ['开始日期', '选择日期']
+          }
+        ],
         // 表头
         columns: [
           {
@@ -250,23 +188,24 @@
       this.getTagList()
     },
     methods: {
-      // 点击
-      btnClick(item) {
-        if (item.btn.name === '查询') {
-          this.onRefresh()
-        } else if (item.btn.name === '添加') {
-          this.onAdd()
+      // 搜索框改变
+      tableSearchChange(obj) {
+        this.queryParam = obj.queryParams
+        if (obj.type === 'submit') {
+          // 执行查询
+          this.onRefresh() // 刷新当前页
+        } else if (obj.type === 'filtrate') {
+          // 执行了筛选
+          this.$refs.table.refresh(true) // 刷新到第一页
+        } else if (obj.type === 'reset') {
+          // 执行了重置
+          this.$refs.table.refresh(true) // 刷新到第一页
         }
+        console.log('回调接受的表单数据: ', obj)
       },
       // 选择
       selectUserChange(item) {
         console.log(item)
-      },
-      // 筛选 重置
-      filtrateChange(item) {
-        this.queryParam = item
-        // 刷新到第一页
-        this.$refs.table.refresh(true)
       },
       // 查询
       getList(data) {

@@ -20,6 +20,7 @@ import Tree from '@/components/Tree/Tree'
 import Trend from '@/components/Trend'
 import STable from '@/components/Table'
 import TableFiltrate from '@/components/TableFiltrate/TableFiltrate'
+import TableSearch from '@/components/TableFiltrate/TableSearch'
 import MultiTab from '@/components/MultiTab'
 import IconSelector from '@/components/IconSelector'
 import TagSelect from '@/components/TagSelect'
@@ -52,6 +53,7 @@ export {
   Tree,
   STable,
   TableFiltrate,
+  TableSearch,
   MultiTab,
   IconSelector,
   TagSelect,
