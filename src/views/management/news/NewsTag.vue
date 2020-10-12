@@ -2,7 +2,7 @@
   <a-card :body-style="{padding: '15px 20px'}" :bordered="false">
     <table-search :searchDataSource="searchDataSource" @change="tableSearchChange">
       <template v-slot:extra>
-        <a-button class="m-l10" type="normal" @click="onAdd">添加</a-button>
+        <a-button class="m-l10" type="normal" @click="onAdd" v-action:news_tag_add>添加</a-button>
       </template>
     </table-search>
     <s-table
@@ -22,11 +22,15 @@
       </span>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a class="table-edit" @click="handleEdit(record)">编辑</a>
-          <a-divider type="vertical"/>
-          <a class="table-again" @click="handleState(record)">{{ record.state==1?'禁用':'解禁' }}</a>
-          <a-divider type="vertical"/>
-          <a class="table-delete" @click="handleDelete(record)">删除</a>
+          <a class="table-edit" v-action:news_tag_edit @click="handleEdit(record)">编辑</a>
+          <span v-action:news_tag_disable>
+            <a-divider type="vertical"/>
+            <a class="table-again" @click="handleState(record)">{{ record.state==1?'禁用':'启用' }}</a>
+          </span>
+          <span v-action:news_tag_delete>
+            <a-divider type="vertical"/>
+            <a class="table-delete" @click="handleDelete(record)">删除</a>
+          </span>
         </template>
       </span>
     </s-table>
@@ -176,11 +180,6 @@
           // 执行了重置
           this.$refs.table.refresh(true) // 刷新到第一页
         }
-        console.log('回调接受的表单数据: ', obj)
-      },
-      // 选择
-      selectUserChange(item) {
-        console.log(item)
       },
       // 查询
       getList(data) {

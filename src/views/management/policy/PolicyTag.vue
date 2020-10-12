@@ -1,81 +1,85 @@
 <template>
   <a-card :body-style="{padding: '15px 20px'}" :bordered="false">
-    <table-filtrate
-      :filtrate="filtrate"
-      @btnClick="btnClick"
-      @selectUserChange="selectUserChange"
-      @filtrateChange="filtrateChange"></table-filtrate>
-      <s-table
-        ref="table"
-        size="default"
-        rowKey="id"
-        :columns="columns"
-        :data="loadData"
-        showPagination="auto"
-        class="m-t10"
-      >
-        <span slot="state" slot-scope="text">
-          {{ text | state }}
-        </span>
-        <span slot="createTime" slot-scope="text">
-          {{ text | dayjs }}
-        </span>
-        <span slot="action" slot-scope="text, record">
-          <template>
-            <a class="table-edit" @click="handleEdit(record)">编辑</a>
+    <table-search :searchDataSource="searchDataSource" @change="tableSearchChange">
+      <template v-slot:extra>
+        <a-button class="m-l10" type="normal" @click="onAdd" v-action:policy_tag_add>添加</a-button>
+      </template>
+    </table-search>
+    <s-table
+      ref="table"
+      size="default"
+      rowKey="id"
+      :columns="columns"
+      :data="loadData"
+      showPagination="auto"
+      class="m-t10"
+    >
+      <span slot="state" slot-scope="text">
+        {{ text | state }}
+      </span>
+      <span slot="createTime" slot-scope="text">
+        {{ text | dayjs }}
+      </span>
+      <span slot="action" slot-scope="text, record">
+        <template>
+          <a class="table-edit" v-action:policy_tag_edit @click="handleEdit(record)">编辑</a>
+          <span v-action:policy_tag_disable>
             <a-divider type="vertical"/>
-            <a class="table-again" @click="handleState(record)">{{ record.state==1?'禁用':'解禁' }}</a>
+            <a class="table-again" @click="handleState(record)">{{ record.state==1?'禁用':'启用' }}</a>
+          </span>
+          <span v-action:policy_tag_delete>
             <a-divider type="vertical"/>
             <a class="table-delete" @click="handleDelete(record)">删除</a>
-          </template>
-        </span>
-      </s-table>
-      <a-modal v-model="visible" title="标签" on-ok="onSave">
-        <template slot="footer">
-          <a-button key="back" @click="handleCancel">
-            取消
-          </a-button>
-          <a-button key="submit" type="primary" @click="onSave">
-            提交
-          </a-button>
+          </span>
         </template>
-        <a-form :form="form">
-          <a-form-item
-            label="标题"
-            :labelCol="{span: 5 }"
-            :wrapperCol="{span: 16 }">
-            <a-input
-              name="title"
-              v-decorator="[
-                'title',
-                {rules: [{ required: true, message: '请输入标题',whitespace: true }]}]"
-              placeholder="请输入标题"/>
-          </a-form-item>
-          <a-form-item
-            label="描述"
-            :labelCol="{span: 5 }"
-            :wrapperCol="{span: 16 }">
-            <a-textarea
-              name="content"
-              v-decorator="[
-                'content',
-                {rules: [{ required: true, message: '请输入描述',whitespace: true }]}]"
-              placeholder="请输入描述"/>
-          </a-form-item>
-        </a-form>
-      </a-modal>
+      </span>
+    </s-table>
+    <a-modal v-model="visible" title="标签" on-ok="onSave">
+      <template slot="footer">
+        <a-button key="back" @click="handleCancel">
+          取消
+        </a-button>
+        <a-button key="submit" type="primary" @click="onSave">
+          提交
+        </a-button>
+      </template>
+      <a-form :form="form">
+        <a-form-item
+          label="标题"
+          :labelCol="{span: 5 }"
+          :wrapperCol="{span: 16 }">
+          <a-input
+            name="title"
+            v-decorator="[
+              'title',
+              {rules: [{ required: true, message: '请输入标题',whitespace: true }]}]"
+            placeholder="请输入标题"/>
+        </a-form-item>
+        <a-form-item
+          label="描述"
+          :labelCol="{span: 5 }"
+          :wrapperCol="{span: 16 }">
+          <a-textarea
+            name="content"
+            v-decorator="[
+              'content',
+              {rules: [{ required: true, message: '请输入描述',whitespace: true }]}]"
+            placeholder="请输入描述"/>
+        </a-form-item>
+      </a-form>
+    </a-modal>
     </a-card>
 </template>
 
 <script>
   import { baseFieldSaveField, baseFieldFindList, baseFieldDeleteAll, baseFieldUpdateState } from '@/api/cygmNormPro'
-  import { STable, Ellipsis, TableFiltrate } from '@/components'
+  import { STable, Ellipsis, TableSearch } from '@/components'
   export default {
     name: 'PolicyTag',
     components: {
       STable,
       Ellipsis,
-      TableFiltrate
+      TableSearch
     },
     data () {
       return {
@@ -83,46 +87,23 @@
         editID: '',
         form: this.$form.createForm(this),
         visible: false,
-        filtrate: {
-          className: '',
-          seekList: [ // 表格的筛选项
-            {
-              type: 'input', // 文本框搜索   input（文本框）  select（下拉框）  date(日期) selectUsr（选择用户)
-              name: 'keyword', // 对应的字段
-              label: '关键字', // 文字描述
-              placeholder: '请输入关键字',
-              defaultValue: ''// 默认值
-            },
-            {
-              type: 'date',
-              name: 'date',
-              label: '创建日期',
-              startName: 'startDate', // 开始日期字段
-              endName: 'endDate', // 结束日期字段
-              placeholder: '请选择日期',
-              defaultValue: []// 默认值
-            }
-          ],
-          // 表格按钮
-          headBtnList: [
-            {
-              name: '查询',
-              type: 'primary',
-              className: ''
-            },
-            {
-              name: '重置',
-              type: 'primary',
-              ghost: true,
-              className: ''
-            },
-            {
-              name: '添加',
-              type: 'normal',
-              className: '',
-              authority: 'role_add' // 权限
-            }]
-        },
+        // 搜索数据源
+        searchDataSource: [
+          {
+            type: 'text', // 控件类型
+            labelText: '关键字', // 控件显示的文本
+            fieldName: 'keyword',
+            placeholder: '请输入关键字' // 默认控件的空值文本
+          },
+          {
+            labelText: '创建日期',
+            type: 'datetimeRange',
+            fieldName: 'createDate',
+            startName: 'startDate', // 开始日期字段
+            endName: 'endDate', // 结束日期字段
+            placeholder: ['开始日期', '选择日期']
+          }
+        ],
         // 表头
         columns: [
           {
@@ -185,23 +166,19 @@
 
     },
     methods: {
-      // 点击
-      btnClick(item) {
-        if (item.btn.name === '查询') {
-          this.onRefresh()
-        } else if (item.btn.name === '添加') {
-          this.onAdd()
+      // 搜索框改变
+      tableSearchChange(obj) {
+        this.queryParam = obj.queryParams
+        if (obj.type === 'submit') {
+          // 执行查询
+          this.onRefresh() // 刷新当前页
+        } else if (obj.type === 'filtrate') {
+          // 执行了筛选
+          this.$refs.table.refresh(true) // 刷新到第一页
+        } else if (obj.type === 'reset') {
+          // 执行了重置
+          this.$refs.table.refresh(true) // 刷新到第一页
         }
-      },
-      // 选择
-      selectUserChange(item) {
-        console.log(item)
-      },
-      // 筛选 重置
-      filtrateChange(item) {
-        this.queryParam = item
-        // 刷新到第一页
-        this.$refs.table.refresh(true)
       },
       // 查询
       getList (data) {

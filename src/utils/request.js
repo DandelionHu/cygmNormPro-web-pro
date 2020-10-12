@@ -42,14 +42,15 @@ const errorHandler = (error) => {
       })
     }
     if (error.response.status === 406) {
-      Vue.prototype.$notification.error({
-        message: '登录失效',
-        description: '登录失效，请重新登录'
-      })
-      store.dispatch('Logout').then(() => {
-        setTimeout(() => {
-          window.location.reload()
-        }, 1500)
+      Vue.prototype.$warning({
+        title: '登录失效',
+        okText: '确认',
+        content: h => <div style="color:red;">登录失效，请重新登录</div>,
+        onOk() {
+          store.dispatch('logoutInfo').then(() => {
+            window.location.reload()
+          })
+        }
       })
     }
     if (error.response.status === 408) {
@@ -65,9 +66,7 @@ const errorHandler = (error) => {
       })
       if (token) {
         store.dispatch('Logout').then(() => {
-          setTimeout(() => {
-            window.location.reload()
-          }, 1500)
+          window.location.reload()
         })
       }
     }

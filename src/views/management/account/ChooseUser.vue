@@ -1,15 +1,6 @@
 <template>
   <div>
-    <a-form layout="inline">
-      <a-form-item
-        :wrapperCol="{span: 24 }">
-        <a-input name="keyword" placeholder="请输入关键字" v-model="queryParam.keyword" @change="onSearch"/>
-      </a-form-item>
-      <a-form-item>
-        <a-button type="primary" @click="onSearch">查询</a-button>
-        <a-button class="m-l10" @click="onReset" type="primary" ghost>重置</a-button>
-      </a-form-item>
-    </a-form>
+    <table-search :searchDataSource="searchDataSource" @change="tableSearchChange"></table-search>
     <s-table
       ref="table"
       size="default"
@@ -30,11 +21,12 @@
 
 <script>
   import { baseUserFindList } from '@/api/cygmNormPro'
-  import { STable, Ellipsis } from '@/components'
+  import { STable, Ellipsis, TableSearch } from '@/components'
   export default {
     name: 'ChooseUser',
     components: {
       STable,
+      TableSearch,
       Ellipsis
     },
     props: {
@@ -67,6 +59,15 @@
             title: '状态',
             dataIndex: 'state',
             scopedSlots: { customRender: 'state' }
+          }
+        ],
+        // 搜索数据源
+        searchDataSource: [
+          {
+            type: 'text', // 控件类型
+            labelText: '关键字', // 控件显示的文本
+            fieldName: 'keyword',
+            placeholder: '请输入关键字' // 默认控件的空值文本
           }
         ],
         // 查询参数
@@ -112,14 +113,27 @@
       })
     },
     methods: {
-      // 搜索
+      // 搜索框改变
+      tableSearchChange(obj) {
+        this.queryParam = obj.queryParams
+        if (obj.type === 'submit') {
+          // 执行查询
+          this.onRefresh() // 刷新当前页
+        } else if (obj.type === 'filtrate') {
+          // 执行了筛选
+          this.onSearch() // 刷新到第一页
+        } else if (obj.type === 'reset') {
+          // 执行了重置
+          this.onSearch() // 刷新到第一页
+        }
+      },
+      // 刷新当前页
+      onRefresh() {
+        this.$refs.table.refresh()
+      },
+      // 搜索 刷新到第一页
       onSearch () {
         this.$refs.table.refresh(true)
-      },
-      // 重置
-      onReset () {
-        this.queryParam = {}
-        this.onSearch()
       },
       // 查询
       getList (data) {
@@ -129,8 +143,6 @@
       },
       // 选择
       onSelectChange (selectedRowKeys, selectedRows) {
-        console.log(selectedRowKeys)
-        console.log(selectedRows)
         this.selectedRowKeys = selectedRowKeys
         this.selectedRows = selectedRows
       },

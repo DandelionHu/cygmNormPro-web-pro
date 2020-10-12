@@ -1,11 +1,11 @@
 <template>
     <a-card :body-style="{padding: '15px 20px'}" :bordered="false">
       <div v-show="showList">
-        <table-filtrate
-          :filtrate="filtrate"
-          @btnClick="btnClick"
-          @selectUserChange="selectUserChange"
-          @filtrateChange="filtrateChange"></table-filtrate>
+        <table-search :searchDataSource="searchDataSource"  @change="tableSearchChange">
+          <template v-slot:extra>
+            <a-button class="m-l10" type="normal" @click="onAdd" v-action:manager_add>添加</a-button>
+          </template>
+        </table-search>
         <s-table
           ref="table"
           size="default"
@@ -22,7 +22,7 @@
           <span slot="action" slot-scope="text, record">
             <template>
               <a class="table-look" v-action:manager_info @click="handleLook(record)">查看</a>
-              <span v-if="record.isAdmin==0">
+              <template v-if="record.isAdmin==0">
                 <span v-action:manager_edit>
                   <a-divider type="vertical"/>
                   <a class="table-edit"  @click="handleEdit(record)">编辑</a>
@@ -35,7 +35,7 @@
                   <a-divider type="vertical"/>
                   <a class="table-delete"  @click="handleDelete(record)">删除</a>
                 </span>
-              </span>
+              </template>
             </template>
           </span>
         </s-table>
@@ -49,7 +49,7 @@
 
 <script>
   import { baseManagerFindList, baseManagerDeleteAll, baseManagerResetPassword } from '@/api/cygmNormPro'
-  import { STable, Ellipsis, TableFiltrate } from '@/components'
+  import { STable, Ellipsis, TableSearch } from '@/components'
   import ManagerInfo from './ManagerInfo'
   import ManagerAdd from './ManagerAdd'
   export default {
@@ -57,7 +57,7 @@
     components: {
       STable,
       Ellipsis,
-      TableFiltrate,
+      TableSearch,
       ManagerInfo,
       ManagerAdd
     },
@@ -67,46 +67,23 @@
         showAdd: false,
         showInfo: false,
         editID: '', // 编辑id
-        filtrate: {
-          className: '',
-          seekList: [ // 表格的筛选项
-            {
-              type: 'input', // 文本框搜索   input（文本框）  select（下拉框）  date(日期) selectUsr（选择用户)
-              name: 'keyword', // 对应的字段
-              label: '关键字', // 文字描述
-              placeholder: '请输入关键字',
-              defaultValue: ''// 默认值
-            },
-            {
-              type: 'date',
-              name: 'date',
-              label: '创建日期',
-              startName: 'startDate', // 开始日期字段
-              endName: 'endDate', // 结束日期字段
-              placeholder: '请选择日期',
-              defaultValue: []// 默认值
-            }
-          ],
-          // 表格按钮
-          headBtnList: [
-            {
-              name: '查询',
-              type: 'primary',
-              className: ''
-            },
-            {
-              name: '重置',
-              type: 'primary',
-              ghost: true,
-              className: ''
-            },
-            {
-              name: '添加',
-              type: 'normal',
-              className: '',
-              authority: 'manager_add' // 权限
-            }]
-        },
+        // 搜索数据源
+        searchDataSource: [
+          {
+            type: 'text', // 控件类型
+            labelText: '关键字', // 控件显示的文本
+            fieldName: 'keyword',
+            placeholder: '请输入关键字' // 默认控件的空值文本
+          },
+          {
+            labelText: '创建日期',
+            type: 'datetimeRange',
+            fieldName: 'createDate',
+            startName: 'startDate', // 开始日期字段
+            endName: 'endDate', // 结束日期字段
+            placeholder: ['开始日期', '选择日期']
+          }
+        ],
         // 表头
         columns: [
           {
@@ -164,23 +141,19 @@
     created () {
     },
     methods: {
-      // 点击
-      btnClick(item) {
-        if (item.btn.name === '查询') {
-          this.onRefresh()
-        } else if (item.btn.name === '添加') {
-          this.onAdd()
+      // 搜索框改变
+      tableSearchChange(obj) {
+        this.queryParam = obj.queryParams
+        if (obj.type === 'submit') {
+          // 执行查询
+          this.onRefresh() // 刷新当前页
+        } else if (obj.type === 'filtrate') {
+          // 执行了筛选
+          this.$refs.table.refresh(true) // 刷新到第一页
+        } else if (obj.type === 'reset') {
+          // 执行了重置
+          this.$refs.table.refresh(true) // 刷新到第一页
         }
-      },
-      // 选择
-      selectUserChange(item) {
-        console.log(item)
-      },
-      // 筛选 重置
-      filtrateChange(item) {
-        this.queryParam = item
-        // 刷新到第一页
-        this.$refs.table.refresh(true)
       },
       // 查询
       getList (data) {

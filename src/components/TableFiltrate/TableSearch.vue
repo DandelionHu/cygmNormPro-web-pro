@@ -7,7 +7,8 @@
       :label="item.labelText">
       <!--文本框-->
       <a-input
-        v-if="item.type === 'text'"
+        v-if="item.type === 'text' || item.type === 'chooseText'"
+        :disabled="item.type === 'chooseText'"
         :size="item.size ? item.size : 'default'"
         allowClear
         v-decorator="[
@@ -16,6 +17,12 @@
         ]"
         @change="handleFiltrate"
         :placeholder="item.placeholder"/>
+      <!--选择按钮-->
+      <a-button
+        v-if="item.type === 'chooseText'"
+        type="primary"
+        class="m-l10"
+        @click="chooseChange(item)">选择</a-button>
       <!--数字输入框-->
       <a-input-number
         v-if="item.type === 'number'"
@@ -84,12 +91,12 @@
           item.fieldName,
           { initialValue: item.defaultValue ? item.defaultValue : null }
         ]"
-        @change="handleFiltrate"
+        @change="handleCreateDate"
         :placeholder="item.placeholder"/>
       <a-radio-group
         v-if="item.type === 'radioDate' && Array.isArray(item.options)"
         :size="item.size ? item.size : 'default'"
-        @change="handleFiltrate"
+        @change="handleRadioDate"
         v-decorator="[
           item.fieldName,
           { initialValue: item.defaultValue ? item.defaultValue : '' }
@@ -139,6 +146,7 @@
   </a-form>
 </template>
 <script>
+  import { getTodayDate, getYesterdayDate, getCurrentWeekDate, getCurrentMonthDate } from '@/utils/dateFormat'
   export default {
     computed: {
       SearchGlobalOptions() {
@@ -233,14 +241,14 @@
             {
               labelText: '日期范围',
               type: 'datetimeRange',
-              fieldName: 'formField6',
+              fieldName: 'createDate', // 固定
               placeholder: ['开始日期', '选择日期']
             },
             {
               labelText: '',
               type: 'radioDate',
-              fieldName: 'formField7',
-              defaultValue: 1,
+              fieldName: 'radioDate', // 固定
+              defaultValue: '',
               options: [
                 {
                   label: '今天',
@@ -323,6 +331,11 @@
             }
           ]
         }
+      },
+      // 选择的用户名
+      chooseName: {
+        type: String,
+        default: ''
       }
     },
     data() {
@@ -391,11 +404,37 @@
           if (value && typeof value === 'string') {
             value = value.trim()
           }
-          // 范围
           if (key === 'createDate') {
+            // 范围
             const { startName, endName } = this.searchDataSource.filter(item => item.fieldName === key)[0]
             tempObj[startName] = value[0]
             tempObj[endName] = value[1]
+          } else if (key === 'radioDate' && value) {
+            // 今天 昨天 本周 本月
+            const { startName, endName } = this.searchDataSource.filter(item => item.fieldName === key)[0]
+            let searchData = ''
+            switch (value) {
+              case 1:
+                // 今天
+                searchData = getTodayDate()
+                break
+              case 2:
+                // 昨天
+                searchData = getYesterdayDate()
+                break
+              case 3:
+                // 本周
+                searchData = getCurrentWeekDate()
+                break
+              case 4:
+                // 本月
+                searchData = getCurrentMonthDate()
+                break
+            }
+            tempObj[startName] = searchData[0] || ''
+            tempObj[endName] = searchData[1] || ''
+          } else if (key === 'radioDate' && value) {
+
           } else {
             tempObj[key] = value
           }
@@ -437,6 +476,37 @@
             }
           })
         }, 10)
+      },
+      // 本周
+      handleRadioDate() {
+        if (this.form.getFieldValue('createDate')) {
+          this.form.setFieldsValue({
+            createDate: null
+          })
+        }
+        this.handleFiltrate()
+      },
+      // 范围
+      handleCreateDate() {
+        if (this.form.getFieldValue('radioDate')) {
+          this.form.setFieldsValue({
+            radioDate: ''
+          })
+        }
+        this.handleFiltrate()
+      },
+      // 选择
+      chooseChange(item) {
+        this.$emit('chooseChange', item)
+      }
+    },
+    watch: {
+      chooseName(val) {
+        const { fieldName } = this.searchDataSource.filter(item => item.type === 'chooseText')[0]
+        this.form.setFieldsValue({
+          [fieldName]: val
+        })
+        this.handleFiltrate()
       }
     }
   }

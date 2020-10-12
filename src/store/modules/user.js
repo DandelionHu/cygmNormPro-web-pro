@@ -90,6 +90,16 @@ const user = {
           localStorage.remove(ACCESS_TOKEN)
         })
       })
+    },
+    // 删除登录信息
+    logoutInfo({ commit, state }) {
+      return new Promise((resolve) => {
+        commit('SET_TOKEN', '')
+        commit('SET_ROLES', '')
+        commit('SET_MENU', [])
+        localStorage.remove(ACCESS_TOKEN)
+        resolve()
+      })
     }
   }
 }

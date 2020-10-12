@@ -3,7 +3,7 @@
     <div v-show="showList">
       <table-search :searchDataSource="searchDataSource"  @change="tableSearchChange">
         <template v-slot:extra>
-          <a-button class="m-l10" type="normal" @click="onAdd">添加</a-button>
+          <a-button class="m-l10" type="normal" @click="onAdd" v-action:news_add>添加</a-button>
         </template>
       </table-search>
       <s-table
@@ -27,21 +27,23 @@
         </span>
         <span slot="action" slot-scope="text, record">
           <template>
-            <a class="table-look" @click="handleLook(record)">查看</a>
-            <a-divider type="vertical"/>
-            <a class="table-edit" @click="handleEdit(record)">编辑</a>
-            <a-divider type="vertical"/>
-            <template v-if="record.state === 1 || record.state === 3">
-              <a
-                class="table-again"
-                @click="handleState(record)">{{ record.state==1?'禁用':record.state==3?'启用':'' }}</a>
+            <a class="table-look" v-action:news_info @click="handleLook(record)">查看</a>
+            <span v-action:news_edit>
               <a-divider type="vertical"/>
-            </template>
-            <template v-if="record.state === 2">
+              <a class="table-edit" @click="handleEdit(record)">编辑</a>
+            </span>
+            <span v-action:news_disable v-if="record.state === 1 || record.state === 3">
+              <a-divider type="vertical"/>
+              <a class="table-again" @click="handleState(record)">{{ record.state==1?'禁用':record.state==3?'启用':'' }}</a>
+            </span>
+            <span v-action:news_check v-if="record.state === 2">
+              <a-divider type="vertical"/>
               <a class="table-again" @click="handleState(record)">审核</a>
+            </span>
+            <span v-action:news_delete>
               <a-divider type="vertical"/>
-            </template>
-            <a class="table-delete" @click="handleDelete(record)">删除</a>
+              <a class="table-delete" @click="handleDelete(record)">删除</a>
+            </span>
           </template>
         </span>
       </s-table>
@@ -83,12 +85,51 @@
             placeholder: '请输入关键字' // 默认控件的空值文本
           },
           {
+            labelText: '栏目',
+            type: 'select',
+            fieldName: 'fieldId',
+            placeholder: '请选择栏目',
+            defaultValue: '',
+            options: [
+              {
+                label: '全部',
+                value: ''
+              }
+            ]
+          },
+          {
             labelText: '创建日期',
             type: 'datetimeRange',
             fieldName: 'createDate',
             startName: 'startDate', // 开始日期字段
             endName: 'endDate', // 结束日期字段
             placeholder: ['开始日期', '选择日期']
+          },
+          {
+            labelText: '',
+            type: 'radioDate',
+            fieldName: 'radioDate',
+            startName: 'startDate', // 开始日期字段
+            endName: 'endDate', // 结束日期字段
+            defaultValue: '',
+            options: [
+              {
+                label: '今天',
+                value: 1
+              },
+              {
+                label: '昨天',
+                value: 2
+              },
+              {
+                label: '本周',
+                value: 3
+              },
+              {
+                label: '本月',
+                value: 4
+              }
+            ]
           }
         ],
         // 表头
@@ -201,11 +242,6 @@
           // 执行了重置
           this.$refs.table.refresh(true) // 刷新到第一页
         }
-        console.log('回调接受的表单数据: ', obj)
-      },
-      // 选择
-      selectUserChange(item) {
-        console.log(item)
       },
       // 查询
       getList(data) {
@@ -321,7 +357,7 @@
         }
         const { returnValue: res } = await baseFieldFindList(data)
         res.forEach((v, i) => {
-          this.filtrate.seekList[1].options.push({
+          this.searchDataSource[1].options.push({
             label: v.title,
             value: v.id
           })
