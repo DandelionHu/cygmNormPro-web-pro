@@ -13,6 +13,7 @@ const loginRoutePath = '/user/login'
 const defaultRoutePath = '/home'
 // 路由全局前置守卫
 router.beforeEach((to, from, next) => {
+  console.log(to)
   NProgress.start() // 进度条开始
   // 设置title
   to.meta && (typeof to.meta.title !== 'undefined' && setDocumentTitle(`${to.meta.title} - ${domTitle}`))
@@ -45,11 +46,16 @@ router.beforeEach((to, from, next) => {
               }
             })
           }
-        }).catch(() => {
+        }).catch(async() => {
+          // 清空token
+          await store.dispatch('logoutInfo')
+          // 重定向到登录
+          next({ path: loginRoutePath, query: { redirect: to.fullPath } })
           // 结束进度条
           NProgress.done()
         })
       } else {
+        // 有菜单
         next()
       }
     }
@@ -61,13 +67,15 @@ router.beforeEach((to, from, next) => {
     } else {
       // 跳转到登录
       next({ path: loginRoutePath, query: { redirect: to.fullPath } })
+      // 结束进度条
       NProgress.done()
     }
   }
 })
 // 路由全局后置钩子
 router.afterEach(() => {
-  NProgress.done() // finish progress bar
+  // 结束进度条
+  NProgress.done()
 })
 router.onError((error) => {
   const pattern = /Loading chunk (\d)+ failed/g

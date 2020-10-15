@@ -9,6 +9,7 @@ const constantRouterComponents = {
   RouteViewPage: RouteViewPage,
   // 你需要动态引入的页面组件
   'Exception404': () => import(/* webpackChunkName: "fail" */ '@/views/management/exception/404'),
+  'Test': () => import(/* webpackChunkName: "fail" */ '@/views/management/test/Test'),
   'HomeList': () => import(/* webpackChunkName: "fail" */'@/views/management/home/HomeList'),
   'BannerList': () => import(/* webpackChunkName: "fail" */'@/views/management/banner/BannerList'),
   // 用户管理
